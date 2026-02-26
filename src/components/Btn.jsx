@@ -1,5 +1,5 @@
-export default function Btn({}) {
+export default function Btn({btnClass, content, onClick}) {
     return (
-        <button type="submit" className="btn btn-primary" >Submit</button>
+        <button type="submit" className={btnClass} onClick={onClick}>{content}</button>
     )
 }

@@ -3,19 +3,23 @@ export default function InputField({
     placeholder,
     isHelperEnabled,
     helperText,
-    showPassword
+    showPassword,
+    setValue,
+    value
 }) {
     if (isHelperEnabled) {
         return(
             <div className="mb-3">
-                <input type={showPassword ? {type} : "password"} className="form-control" placeholder={placeholder} />
+                <input type={showPassword ? {type} : "password"} className="form-control" placeholder={placeholder} value={value}
+                onChange={(e) => setValue(e.target.value)}/>
                 <div id="emailHelp" className="form-text text-white-50">{helperText}</div>
             </div>
         )
     } else {
         return(
             <div className="mb-3">
-                <input type={showPassword ? {type} : "password"} className="form-control" placeholder={placeholder} />
+                <input type={showPassword ? {type} : "password"} className="form-control" placeholder={placeholder} value={value}
+                onChange={(e) => setValue(e.target.value)}/>
             </div>
         )
     }

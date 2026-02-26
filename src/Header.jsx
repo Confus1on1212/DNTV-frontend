@@ -9,7 +9,7 @@ export default function Header() {
         <nav className="navbar text-bg-dark p-1">
             <div className="container-lg d-flex align-items-center justify-content-between">
                 <Link to={"/"} className="navbar-brand user-select-none text-decoration-none text-teal text-uppercase fw-bolder ">
-                    Navbar
+                    DNTV
                 </Link>
 
                 <div className="navbar-nav nav-underline flex-row overflow-x-auto">
