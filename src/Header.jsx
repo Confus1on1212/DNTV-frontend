@@ -1,25 +1,26 @@
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
-
+import Btn from './components/Btn'
 import "bootstrap/dist/js/bootstrap.bundle.min.js"
+import './scss/main.scss'
+import './style/main.css'
 
 export default function Header() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
     return(
-        <nav className="navbar text-bg-dark p-1">
-            <div className="container-lg d-flex align-items-center justify-content-between">
-                <Link to={"/"} className="navbar-brand user-select-none text-decoration-none text-secondary text-uppercase fw-bolder ">
-                    DNTV
-                </Link>
+        <nav className="navbar blurry-light p-1">
+            <div className="container-fluid d-flex align-items-center justify-content-between">
+                <Link to={"/"} className="navbar-brand user-select-none text-decoration-none text-custom-yellow text-uppercase fw-bolder hover ms-3">DNTV</Link>
 
-                <div className="navbar-nav nav-underline flex-row overflow-x-auto">
-                    <a className="nav-link text-success user-select-none active" href="/">Home</a>
-                    <a className="nav-link text-secondary user-select-none" href="#">Movies</a>
-                    <a className="nav-link text-secondary user-select-none" href="#">Shows</a>
+                <div className="navbar-nav nav-underline flex-row align-items-center overflow-x-auto">
+                    <a className="nav-link text-custom-yellow user-select-none active" href="/">Home</a>
+                    <a className="nav-link text-custom-blue user-select-none" href="#">Movies</a>
+                    <a className="nav-link text-custom-blue user-select-none" href="#">Shows</a>
                 </div>
 
                 <div className="d-flex">
-                    <Link to={"/login"}><button type="button" className="btn btn-outline-secondary mx-1">Log in</button></Link>
-                    <Link to={"/signup"}><button type="button" className="btn btn-outline-success mx-1">Sign up</button></Link>
+                    <Link to={"/login"}><Btn btnClass={'btn btn-outline-custom-green mx-1'} content={'Log In'}/></Link>
+                    <Link to={"/signup"}><Btn btnClass={'btn btn-outline-custom-yellow mx-1'} content={'Sign Up'}/></Link>
                 </div>
             </div>
         </nav>

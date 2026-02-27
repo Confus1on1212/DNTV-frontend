@@ -1,75 +1,57 @@
-import { useState } from "react";
-import Header from "./Header";
+import { useState } from "react"
+import Header from "./Header"
 import InputField from "./components/InputField.jsx"
 import Btn from "./components/Btn.jsx"
+import CheckBox from './components/Checkbox.jsx'
+import './scss/main.scss'
+import './style/main.css'
 
-import {login} from './user.js'
-
+import { login } from "./user.js"
 
 export default function Login() {
-    const [email, setEmail] = useState("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
 
+  const [showPassword, setShowPassword] = useState(false)
 
+  async function onLogin() {
+    if (!email || !password) {
+      alert("Email vagy jelszót töltsd ki!")
+    } else {
+      try {
+        const data = await login(email, password)
 
-    const [showPassword, setShowPassword] = useState(false)
-
-
-
-
-    async function onLogin() {
-        if(!email ||!password){
-            alert('Email vagy jelszót töltsd ki!')
-        } else{
-            try {
-                const data = await login(email, password)
-
-                if (data.error) {
-                    alert(data.error)
-                } else {
-                    alert(data.message)
-                }
-            } catch (err) {
-                alert('nem sikerült csatlakozni a szerverhez!')
-            }
+        if (data.error) {
+          alert(data.error)
+        } else {
+          alert(data.message)
         }
-
+      } catch (err) {
+        alert("nem sikerült csatlakozni a szerverhez!")
+      }
     }
-    //asd
-    return (
-        <div className="container-fluid text-bg-dark vh-100">
-            <Header />
-            
-            {/* make diff color */}
-            <div className="text-bg-secondary rounded w-25 h-75 mt-4 p-5 mx-auto"> 
-                <h1 className="text-center">Log In</h1>
+  }
+  
+  return (
+    <div className="container-fluid text-bg-dark vh-100 asddd">
+      <Header />
 
-                <form>
-                    <InputField 
-                    value={email}
-                    type='email' placeholder='Email' isHelperEnabled={true} 
-                    helperText="We won't share your email" showPassword={true}
-                    setValue={setEmail}
-                    />
-                    <InputField 
-                    value={password}
-                    type='password' placeholder='Password' 
-                    isHelperEnabled={false} showPassword={showPassword}
-                    
-                    setValue={setPassword}
-                    />
-                    
-                    <div className="mb-3 form-check">
-                        <input type="checkbox" className="form-check-input" id="exampleCheck1" onClick={() => setShowPassword(!showPassword)}/>
-                        <label className="form-check-label" htmlFor="exampleCheck1">Show password</label>
-                    </div>
-                </form>
+      <div className="blurry-light rounded w-25 h-75 mt-4 p-5 mx-auto">
+        <h1 className="text-center text-custom-yellow">Log In</h1>
 
-                <Btn btnClass={"btn btn-primary"} content={"Submit"} onClick={onLogin}/>
-                    
-            </div>
+        <form>
+          <InputField value={email} type="email" placeholder="Email" isHelperEnabled={true} helperText="We won't share your email" showPassword={true} setValue={setEmail} />
+          <InputField value={password} type="password" placeholder="Password" isHelperEnabled={false} showPassword={showPassword} setValue={setPassword} />
 
-        </div>
-    )
+          <div className="mb-3 form-check text-custom-blue">
+            <input type="checkbox" className="form-check-input" id="showPasswordCheck" onClick={() => setShowPassword(!showPassword)} />
+            <label className="form-check-label" htmlFor="showPasswordCheck"> Show Password</label>
+          </div>
+        </form>
+
+        <Btn btnClass={"btn btn-custom-yellow"} content={"Log In"} onClick={onLogin} />
+      </div>
+    </div>
+  )
 }
