@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import HeaderLogo from "./assets/DNTVnobg.png";
@@ -52,6 +53,17 @@ function App() {
       </header>
     </div>
   );
+=======
+import "bootstrap/dist/css/bootstrap.css";
+import Header from "./Header";
+
+function App() {
+  return (
+    <div className="app-root container-fluid text-bg-dark vh-100">
+        <Header/>
+    </div>
+  )
+>>>>>>> nandi
 }
 
 export default App;
