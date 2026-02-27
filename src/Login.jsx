@@ -32,6 +32,7 @@ export default function Login() {
       }
     }
   }
+  
   return (
     <div className="container-fluid text-bg-dark vh-100 asddd">
       <Header />
@@ -43,7 +44,10 @@ export default function Login() {
           <InputField value={email} type="email" placeholder="Email" isHelperEnabled={true} helperText="We won't share your email" showPassword={true} setValue={setEmail} />
           <InputField value={password} type="password" placeholder="Password" isHelperEnabled={false} showPassword={showPassword} setValue={setPassword} />
 
-          <CheckBox content={"Show Password"} />
+          <div className="mb-3 form-check text-custom-blue">
+            <input type="checkbox" className="form-check-input" id="showPasswordCheck" onClick={() => setShowPassword(!showPassword)} />
+            <label className="form-check-label" htmlFor="showPasswordCheck"> Show Password</label>
+          </div>
         </form>
 
         <Btn btnClass={"btn btn-custom-yellow"} content={"Log In"} onClick={onLogin} />
