@@ -18,7 +18,7 @@ export default function Login() {
 
 
 
-    async function LOGIN() {
+    async function onLogin() {
         if(!email ||!password){
             alert('Email vagy jelszót töltsd ki!')
         } else{
@@ -65,7 +65,7 @@ export default function Login() {
                     </div>
                 </form>
 
-                <Btn btnClass={"btn btn-primary"} content={"Submit"} onClick={LOGIN}/>
+                <Btn btnClass={"btn btn-primary"} content={"Submit"} onClick={onLogin}/>
                     
             </div>
 

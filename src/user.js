@@ -6,6 +6,7 @@ export async function register(email, username, psw) {
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({email, username, psw})
         
     })
@@ -24,6 +25,7 @@ export async function login(email, psw){
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({email, psw})
     })
     const data = await res.json()
