@@ -10,6 +10,7 @@ import Signup from './Signup.jsx';
 
 import './style/font.css'
 import 'bootstrap/dist/css/bootstrap.css';
+import './scss/main.scss'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
