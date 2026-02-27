@@ -12,7 +12,7 @@ export default function Header() {
             <div className="container-fluid d-flex align-items-center justify-content-between">
                 <Link to={"/"} className="navbar-brand user-select-none text-decoration-none text-custom-yellow text-uppercase fw-bolder hover ms-3">DNTV</Link>
 
-                <div className="navbar-nav nav-underline flex-row overflow-x-auto">
+                <div className="navbar-nav nav-underline flex-row align-items-center overflow-x-auto">
                     <a className="nav-link text-custom-yellow user-select-none active" href="/">Home</a>
                     <a className="nav-link text-custom-blue user-select-none" href="#">Movies</a>
                     <a className="nav-link text-custom-blue user-select-none" href="#">Shows</a>
