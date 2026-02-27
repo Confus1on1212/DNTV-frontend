@@ -10,7 +10,34 @@ export default function Signup() {
     const [showPassword, setShowPassword] = useState(false)
 
     async function onSignup() {
-       
+        if (!email || !username || !password || !sPassword) {
+            alert('Tölts ki minden mezőt!')
+        } else {
+
+            if (sPassword != password) {
+                alert('Nem egyezik a jelszó!')
+            } else {
+                try {
+                    const rData = await register(email, username, password)
+
+                    if (rData.error) {
+                        alert(rData.error)
+                    } else {
+                        alert(rData.message)
+                        const loginData = await login(email, password)
+                        setTimeout(()=> navigate('/', 600))
+                    }
+                    
+
+                } catch (err) {
+                    alert('nem sikerült csatlakozni a szerverhez!')
+                }
+            }
+
+
+
+        }
+
     }
 
     return (
@@ -21,8 +48,8 @@ export default function Signup() {
                 <h1 className="text-center text-custom-yellow">Sign Up</h1>
 
                 <form>
-                    <InputField type='text' placeholder='Username' isHelperEnabled={false}/>
-                    <InputField type='email' placeholder='Email' isHelperEnabled={true} helperText="We won't share your email"/>
+                    <InputField type='text' placeholder='Username' isHelperEnabled={false} showPassword={true}/>
+                    <InputField type='email' placeholder='Email' isHelperEnabled={true} helperText="We won't share your email" showPassword={true}/>
                     <InputField type='password' placeholder='Password' isHelperEnabled={false} showPassword={showPassword}/>
                     <InputField type='password' placeholder='Password Again' isHelperEnabled={false} showPassword={showPassword}/>
 
