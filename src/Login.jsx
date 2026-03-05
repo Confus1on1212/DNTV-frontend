@@ -2,8 +2,6 @@ import { useState } from "react"
 import Header from "./Header"
 import InputField from "./components/InputField.jsx"
 import Btn from "./components/Btn.jsx"
-import CheckBox from './components/Checkbox.jsx'
-import './scss/main.scss'
 import './style/main.css'
 
 import { login } from "./user.js"
