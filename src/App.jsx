@@ -18,7 +18,8 @@ function App() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // CAROUSEL SLIDES
+    // CAROUSEL SLIDES 
+    // asdasd
     const fetchSlides = async () => {
       try {
         const data = await getFeatured(6); 
