@@ -2,7 +2,6 @@ import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import Btn from './components/Btn'
 import "bootstrap/dist/js/bootstrap.bundle.min.js"
-import './scss/main.scss'
 import './style/main.css'
 
 export default function Header() {
