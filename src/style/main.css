@@ -157,3 +157,62 @@
 .hover:hover {
   transform: scale(150%);
 }
+
+.carousel-wrapper {
+    width: 100%;
+    height: 600px; 
+    background-color: #f0f2f5;
+}
+
+.ant-carousel, 
+.ant-carousel .slick-slider, 
+.ant-carousel .slick-list, 
+.ant-carousel .slick-track, 
+.ant-carousel .slick-slide > div {
+  height: 100%;
+}
+
+.carousel-card-content {
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    
+}
+
+.overlay {
+    background-color: rgba(0, 0, 0, 0.4);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    color: white;
+}
+
+.overlay h1 {
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+  }
+  
+  .overlay p {
+    font-size: 1.25rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .ant-carousel .slick-dots li button {
+    background: white !important;
+    opacity: 0.5;
+    height: 6px !important;
+    border-radius: 4px;
+  }
+  
+  .ant-carousel .slick-dots li.slick-active button {
+    opacity: 1;
+    width: 30px !important;
+  }
