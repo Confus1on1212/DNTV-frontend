@@ -4,8 +4,12 @@ import Btn from './components/Btn'
 import "bootstrap/dist/js/bootstrap.bundle.min.js"
 import './style/main.css'
 
-export default function Header() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
+export default function Header({user, onLogOut}) {
+    const isLoggedIn = !!user
+    console.log(user);
+    const isAdmin = user?.role === 1
+    console.log(isAdmin);
+
     return(
         <nav className="navbar blurry-light p-1">
             <div className="container-fluid d-flex align-items-center justify-content-between">
@@ -13,9 +17,9 @@ export default function Header() {
 
                 {isLoggedIn && 
                 <div className="navbar-nav nav-underline flex-row align-items-center overflow-x-auto">
-                    <a className="nav-link text-custom-yellow user-select-none active" href="/">Home</a>
-                    <a className="nav-link text-custom-blue user-select-none" href="#">Movies</a>
-                    <a className="nav-link text-custom-blue user-select-none" href="#">Shows</a>
+                    <Link className="nav-link text-custom-yellow user-select-none active">Home</Link>
+                    <Link className="nav-link text-custom-blue user-select-none">Movies</Link>
+                    <Link className="nav-link text-custom-blue user-select-none">Shows</Link>
                 </div>}
 
                 {!isLoggedIn &&
@@ -23,6 +27,16 @@ export default function Header() {
                     <Link to={"/login"}><Btn btnClass={'btn btn-outline-custom-green mx-1'} content={'Log In'}/></Link>
                     <Link to={"/signup"}><Btn btnClass={'btn btn-outline-custom-yellow mx-1'} content={'Sign Up'}/></Link>
                 </div>}
+
+                {isLoggedIn &&
+                    <div className="d-flex">
+                        {isAdmin &&
+                            <Link to={'/upload'}><Btn btnClass={'btn btn-outline-custom-yellow mx-1'} content={'Upload'}/></Link>
+                        }
+                        <Link><Btn btnClass={'btn btn-outline-custom-red mx-1'} content={'Log Out'} onClick={onLogOut} /></Link>
+                    </div>
+                }
+                
             </div>
         </nav>
     )

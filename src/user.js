@@ -1,37 +1,52 @@
-const BACKEND_URL = "http://192.168.9.105:4000/users";
-
 export async function register(email, username, psw) {
-    const res = await fetch(`${BACKEND_URL}/register`,{
+    const res = await fetch(`/users/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        credentials: 'include',
-        body: JSON.stringify({email, username, psw})
-        
+        body: JSON.stringify({ email, username, psw })
+
     })
     const data = await res.json();
-    // console.log(data);
-    if (data.error) {
-        return data
-    }
+    console.log(data);
     return data
 }
 
-
-export async function login(email, psw){
-    const res = await fetch(`${BACKEND_URL}/login`,{
+export async function login(email, psw) {
+    const res = await fetch(`/users/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         credentials: 'include',
-        body: JSON.stringify({email, psw})
+        body: JSON.stringify({ email, psw })
     })
     const data = await res.json()
-    if (data.error) {
-        return data
-    }
     return data
 }
 
+export async function whoami() {
+    const res = await fetch(`/users/whoami`, {
+        method: 'GET',
+        credentials: 'include'
+    })
+
+    if (!res.ok) {
+        const data = await res.json()
+        return { error: data?.error }
+    }
+    return await res.json()
+}
+
+export async function logout() {
+    const res = await fetch(`/users/logout`, {
+        method: 'POST',
+        credentials: 'include'
+    })
+
+    if (!res.ok) {
+        const data = await res.json() 
+        return {error: data?.error}
+    }
+    return await res.json()
+}
