@@ -1,12 +1,14 @@
 import { useState } from "react";
-import Header from "./Header";
-import InputField from "./components/InputField";
-import Btn from "./components/Btn.jsx";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { ToastContainer, toast } from 'react-toastify';
 
-import './style/main.css'
+import Header from "../components/Header.jsx";
+import InputField from "../components/InputField.jsx";
+import Btn from "../components/Btn.jsx";
 
-import { register, login } from './user.js'
+import '../style/main.css'
+
+import { register, login } from '../user.js'
 
 export default function Signup() {
     const [showPassword, setShowPassword] = useState(false)
@@ -19,16 +21,21 @@ export default function Signup() {
 
     async function onSignup() {
         if (!email || !psw || !psw2 || !username) {
-            return alert("ures mezok!")
+            toast.error("ures mezok!")
         }
+
+        if (psw !== psw2) {
+            toast.error("nem egyeznek a jelszavak")
+        }
+
         const data = await register(email, username, psw)
-        console.log(data);
+        // console.log(data);
         if (data.error) {
-            alert(data.error)
+            toast.error(data.error)
         } else {
-            alert(data.message)
+            toast.success(data.message)
             login(email, psw)
-            setTimeout(() => navigate('/'), 1000)
+            setTimeout(() => navigate('/'), 2500)
         }
 
     }
@@ -40,7 +47,7 @@ export default function Signup() {
             <div className="blurry-light rounded w-25 h-75 mt-3 p-5 mx-auto ">
                 <h1 className="text-center text-custom-yellow">Sign Up</h1>
 
-                <form>
+                <div>
                     <InputField type='text' placeholder='Username' isHelperEnabled={false} showPassword={true} setValue={setUsername} />
                     <InputField type='email' placeholder='Email' isHelperEnabled={true} helperText="We won't share your email" showPassword={true} setValue={setEmail} />
                     <InputField type='password' placeholder='Password' isHelperEnabled={false} showPassword={showPassword} setValue={setPassword} />
@@ -52,11 +59,24 @@ export default function Signup() {
                     </div>
 
                     <div className="text-center mb-2">
-                        <Link className="text-custom-blue text-decoration-none" to={"/"}>I already have an account</Link>
+                        <Link className="text-custom-blue text-decoration-none" to={"/login"}>I already have an account</Link>
                     </div>
 
                     <Btn btnClass={"btn btn-custom-yellow"} content={"Sign Up"} onClick={onSignup} />
-                </form>
+
+                    <ToastContainer
+                        position="top-center"
+                        autoClose={2500}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick={false}
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                    />
+                </div>
             </div>
 
         </div>
