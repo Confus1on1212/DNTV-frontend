@@ -32,103 +32,103 @@
 }
 
 .btn-custom-green {
-  color: #fff;
-  background-color: var(--custom-green);
-  border-color: var(--custom-green);
+  color: #fff !important;
+  background-color: var(--custom-green) !important;
+  border-color: var(--custom-green) !important;
 }
 .btn-custom-green:hover,
 .btn-custom-green:focus,
 .btn-custom-green:active {
-  color: var(--custom-green);
-  border-color: var(--custom-green);
+  color: #fff !important;
+  border-color: var(--custom-green) !important;
 }
 
 .btn-custom-red {
-  color: #fff;
-  background-color: var(--custom-red);
-  border-color: var(--custom-red);
+  color: #fff !important;
+  background-color: var(--custom-red) !important;
+  border-color: var(--custom-red) !important;
 }
 .btn-custom-red:hover,
 .btn-custom-red:focus,
 .btn-custom-red:active {
-  color: var(--custom-red);
-  border-color: var(--custom-red);
+  color: #fff !important;
+  border-color: var(--custom-red) !important;
 }
 
 .btn-custom-yellow {
-  color: #fff;
-  background-color: var(--custom-yellow);
-  border-color: var(--custom-yellow);
+  color: #fff !important;
+  background-color: var(--custom-yellow) !important;
+  border-color: var(--custom-yellow) !important;
 }
 .btn-custom-yellow:hover,
 .btn-custom-yellow:focus,
 .btn-custom-yellow:active {
-  color: var(--custom-yellow);
-  border-color: var(--custom-yellow);
+  color: #fff !important;
+  border-color: var(--custom-yellow) !important;
 }
 
 .btn-custom-blue {
-  color: #fff;
-  background-color: var(--custom-blue);
-  border-color: var(--custom-blue);
+  color: #fff !important;
+  background-color: var(--custom-blue) !important;
+  border-color: var(--custom-blue) !important;
 }
 .btn-custom-blue:hover,
 .btn-custom-blue:focus,
 .btn-custom-blue:active {
-  color: var(--custom-blue);
-  border-color: var(--custom-blue);
+  color: #fff !important;
+  border-color: var(--custom-blue) !important;
 }
 
 .btn-outline-custom-green {
-  color: var(--custom-green);
-  border-color: var(--custom-green);
+  color: var(--custom-green) !important;
+  border-color: var(--custom-green) !important;
   background-color: transparent;
 }
 .btn-outline-custom-green:hover,
 .btn-outline-custom-green:focus,
 .btn-outline-custom-green:active {
-  color: #fff;
-  background-color: var(--custom-green);
-  border-color: var(--custom-green);
+  color: #fff !important;
+  background-color: var(--custom-green) !important;
+  border-color: var(--custom-green) !important;
 }
 
 .btn-outline-custom-red {
-  color: var(--custom-red);
-  border-color: var(--custom-red);
+  color: var(--custom-red) !important;
+  border-color: var(--custom-red) !important;
   background-color: transparent;
 }
 .btn-outline-custom-red:hover,
 .btn-outline-custom-red:focus,
 .btn-outline-custom-red:active {
-  color: #fff;
-  background-color: var(--custom-red);
-  border-color: var(--custom-red);
+  color: #fff !important;
+  background-color: var(--custom-red) !important;
+  border-color: var(--custom-red) !important;
 }
 
 .btn-outline-custom-yellow {
-  color: var(--custom-yellow);
-  border-color: var(--custom-yellow);
+  color: var(--custom-yellow) !important;
+  border-color: var(--custom-yellow) !important;
   background-color: transparent;
 }
 .btn-outline-custom-yellow:hover,
 .btn-outline-custom-yellow:focus,
 .btn-outline-custom-yellow:active {
-  color: #fff;
-  background-color: var(--custom-yellow);
-  border-color: var(--custom-yellow);
+  color: #fff !important;
+  background-color: var(--custom-yellow) !important;
+  border-color: var(--custom-yellow) !important;
 }
 
 .btn-outline-custom-blue {
-  color: var(--custom-blue);
-  border-color: var(--custom-blue);
+  color: var(--custom-blue) !important;
+  border-color: var(--custom-blue) !important;
   background-color: transparent;
 }
 .btn-outline-custom-blue:hover,
 .btn-outline-custom-blue:focus,
 .btn-outline-custom-blue:active {
-  color: #fff;
-  background-color: var(--custom-blue);
-  border-color: var(--custom-blue);
+  color: #fff !important;
+  background-color: var(--custom-blue) !important;
+  border-color: var(--custom-blue) !important;
 }
 
 .asddd {

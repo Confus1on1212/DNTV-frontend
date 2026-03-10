@@ -1,14 +1,12 @@
 import { Link } from "react-router";
-import { useEffect, useState } from "react";
-import Btn from './components/Btn'
-import "bootstrap/dist/js/bootstrap.bundle.min.js"
-import './style/main.css'
+
+import Btn from './Btn'
 
 export default function Header({user, onLogOut}) {
     const isLoggedIn = !!user
-    console.log(user);
+    // console.log(user);
     const isAdmin = user?.role === 1
-    console.log(isAdmin);
+    // console.log(isAdmin);
 
     return(
         <nav className="navbar blurry-light p-1">
@@ -24,7 +22,7 @@ export default function Header({user, onLogOut}) {
 
                 {!isLoggedIn &&
                 <div className="d-flex">
-                    <Link to={"/login"}><Btn btnClass={'btn btn-outline-custom-green mx-1'} content={'Log In'}/></Link>
+                    <Link to={"/login"}><Btn btnClass={'btn btn-outline-custom-blue mx-1'} content={'Log In'}/></Link>
                     <Link to={"/signup"}><Btn btnClass={'btn btn-outline-custom-yellow mx-1'} content={'Sign Up'}/></Link>
                 </div>}
 

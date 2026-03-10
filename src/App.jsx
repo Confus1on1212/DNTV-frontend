@@ -1,17 +1,16 @@
-import "bootstrap/dist/css/bootstrap.css";
-import Header from "./Header";
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom'
+
 import { Carousel } from 'antd';
-import './style/main.css'
+import { ToastContainer, toast } from 'react-toastify';
+import Header from "./components/Header.jsx";
+import Btn from "./components/Btn.jsx";
 
 import { getFeatured } from "./videos.js";
 import { whoami, logout } from "./user.js";
-import Btn from "./components/Btn.jsx";
-import {useNavigate} from 'react-router-dom'
 
 function App() {
   const [user, setUser] = useState(null)
-  const [userError, setUserError] = useState("")
 
   const [featuredProjectsSlides, setSlides] = useState([]);
 
@@ -22,12 +21,12 @@ function App() {
     // asdasd
     const fetchSlides = async () => {
       try {
-        const data = await getFeatured(6); 
+        const data = await getFeatured(6);
 
         if (Array.isArray(data)) {
           setSlides(data);
         } else {
-          console.error("Nem tömb érkezett a szerverről:", data);
+          toast.error("nem array erkezett")
         }
       } catch (error) {
         console.error("Hiba a lekérés során:", error);
@@ -38,12 +37,12 @@ function App() {
     async function checkSession() {
       try {
         const data = await whoami();
-        console.log("Session Check:", data);
-        
+        // console.log("Session Check:", data);
+
         if (data && !data.error) {
           setUser(data);
         } else {
-          setUserError(data?.error);
+          toast.error(data?.error);
           setUser(null);
         }
       } catch (err) {
@@ -59,15 +58,17 @@ function App() {
     const data = await logout()
 
     if (data.error) {
-        return setUserError(data.error)
+      return toast.error(data.error)
     }
+    console.log("hoki" + user);
     setUser(null)
+    console.log("asd" + user);
     navigate('/')
-}
+  }
 
   return (
     <div className="app-root">
-      <Header user={user} onLogOut={onLogout}/>
+      <Header user={user} onLogOut={onLogout} />
       <div className="carousel-wrapper">
         <Carousel className="carousel" autoplay={{ dotDuration: true }} autoplaySpeed={5000}>
           {featuredProjectsSlides.map((slide) => (
@@ -84,6 +85,18 @@ function App() {
             </div>
           ))}
         </Carousel>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={2500}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={true}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </div>
     </div>
   );
