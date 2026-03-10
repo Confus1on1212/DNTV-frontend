@@ -28,7 +28,7 @@ export default function Login() {
         setTimeout(() => navigate('/', 2500))
       }
     } catch (err) {
-      alert("nem sikerült csatlakozni a szerverhez!")
+      toast.error("nem sikerült csatlakozni a szerverhez!")
     }
 
   }
