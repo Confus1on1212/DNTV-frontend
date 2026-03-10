@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Carousel } from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
@@ -73,12 +73,12 @@ function App() {
         <Carousel className="carousel" autoplay={{ dotDuration: true }} autoplaySpeed={5000}>
           {featuredProjectsSlides.map((slide) => (
             <div key={slide.id}>
-              <div className="carousel-card-content" style={{ backgroundImage: `url(${slide.image})` }}>
+              <div className="carousel-card-content" style={{ backgroundImage: `url("http://192.168.9.105:4000/uploads/covers/${slide.cover}")`, height: 600 }}>
                 <div className="overlay">
                   <div className="container text-center">
                     <h1 className="display-4 fw-bold mb-3">{slide.title}</h1>
                     <p className="lead mb-4">{slide.description}</p>
-                    <Btn btnClass={"btn btn-custom-yellow"} content={"Play"} />
+                    <Link to={'/play/${slide.title}'}><Btn btnClass={"btn btn-custom-yellow"} content={"Play"}/></Link>
                   </div>
                 </div>
               </div>
