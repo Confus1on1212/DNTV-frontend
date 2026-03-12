@@ -10,6 +10,7 @@ export async function getFeatured(count) {
         
     })
     const data = await res.json();
+    console.log(`getFeatured(${count}) meghivva`);
     // console.log(data);
     if (data.error) {
         return []
