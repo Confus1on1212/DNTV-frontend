@@ -22,14 +22,14 @@ export default function Header({user, onLogOut}) {
 
                 {!isLoggedIn &&
                 <div className="d-flex">
-                    <Link to={"/login"}><Btn btnClass={'btn btn-outline-custom-blue mx-1'} content={'Log In'}/></Link>
+                    <Link to={"/login"}><Btn btnClass={'btn btn-outline-custom-red mx-1'} content={'Log In'}/></Link>
                     <Link to={"/signup"}><Btn btnClass={'btn btn-outline-custom-yellow mx-1'} content={'Sign Up'}/></Link>
                 </div>}
 
                 {isLoggedIn &&
                     <div className="d-flex">
                         {isAdmin &&
-                            <Link to={'/upload'}><Btn btnClass={'btn btn-outline-custom-yellow mx-1'} content={'Upload'}/></Link>
+                            <Link to={'/admin'}><Btn btnClass={'btn btn-outline-custom-yellow mx-1'} content={'Admin'}/></Link>
                         }
                         <Link><Btn btnClass={'btn btn-outline-custom-red mx-1'} content={'Log Out'} onClick={onLogOut} /></Link>
                     </div>

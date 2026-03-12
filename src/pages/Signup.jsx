@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom"; // Javasolt: react-router-dom
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Header from "../components/Header.jsx";
 import InputField from "../components/InputField.jsx";
 import Btn from "../components/Btn.jsx";
-
-import '../style/main.css'
 
 import { register, login } from '../user.js'
 
@@ -19,66 +18,67 @@ export default function Signup() {
 
     const navigate = useNavigate()
 
-    async function onSignup() {
+    async function onSignup(e) {
+        // Megakadályozzuk az oldal újratöltését, ha form-ot használnánk
+        if(e) e.preventDefault();
+
         if (!email || !psw || !psw2 || !username) {
-            toast.error("ures mezok!")
+            return toast.error("Kérlek tölts ki minden mezőt!");
         }
 
-        if (psw !== psw2) {
-            toast.error("nem egyeznek a jelszavak")
+        if(psw !== psw2) {
+            return toast.error("A jelszavak nem egyeznek!");
         }
-
-        const data = await register(email, username, psw)
-        // console.log(data);
-        if (data.error) {
-            toast.error(data.error)
-        } else {
-            toast.success(data.message)
-            login(email, psw)
-            setTimeout(() => navigate('/'), 2500)
+        
+        try {
+            const data = await register(email, username, psw);
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                toast.success(data.message);
+                // Bejelentkezés regisztráció után
+                await login(email, psw);
+                // Navigáció a toast lefutása után
+                setTimeout(() => navigate('/'), 2500);
+            }
+        } catch (err) {
+            toast.error("Hiba a szerverrel való kapcsolódás során!");
         }
-
     }
 
     return (
-        <div className="container-fluid text-bg-dark vh-100 asddd">
+        <div className="container-fluid text-bg-dark vh-100 scenic-background">
             <Header />
 
-            <div className="blurry-light rounded w-25 h-75 mt-3 p-5 mx-auto ">
-                <h1 className="text-center text-custom-yellow">Sign Up</h1>
+            <div className="container pt-3">
+                <div className="row justify-content-center">
+                    <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+                        <div className="blurry-light rounded p-4 p-md-5 mx-auto">
+                            <h1 className="text-center text-custom-yellow mb-4">Sign Up</h1>
 
-                <div>
-                    <InputField type='text' placeholder='Username' isHelperEnabled={false} showPassword={true} setValue={setUsername} />
-                    <InputField type='email' placeholder='Email' isHelperEnabled={true} helperText="We won't share your email" showPassword={true} setValue={setEmail} />
-                    <InputField type='password' placeholder='Password' isHelperEnabled={false} showPassword={showPassword} setValue={setPassword} />
-                    <InputField type='password' placeholder='Password Again' isHelperEnabled={false} showPassword={showPassword} setValue={setPassword2} />
+                            <form onSubmit={onSignup}>
+                                <InputField type='text' placeholder='Username' isHelperEnabled={false} showPassword={true} setValue={setUsername} />
+                                <InputField type='email' placeholder='Email' isHelperEnabled={true} helperText="We won't share your email" showPassword={true} setValue={setEmail} />
+                                <InputField type='password' placeholder='Password' isHelperEnabled={false} showPassword={showPassword} setValue={setPassword} />
+                                <InputField type='password' placeholder='Password Again' isHelperEnabled={false} showPassword={showPassword} setValue={setPassword2} />
 
-                    <div className="mb-3 form-check text-custom-blue">
-                        <input type="checkbox" className="form-check-input" id="showPasswordCheck" onClick={() => setShowPassword(!showPassword)} />
-                        <label className="form-check-label" htmlFor="showPasswordCheck"> Show Password</label>
+                                <div className="mb-3 form-check text-custom-blue">
+                                    <input type="checkbox" className="form-check-input" id="showPasswordCheck" onChange={() => setShowPassword(!showPassword)} checked={showPassword} />
+                                    <label className="form-check-label" htmlFor="showPasswordCheck"> Show Password</label>
+                                </div>
+
+                                <div className="text-center mb-3">
+                                    <Link className="text-custom-blue text-decoration-none" to={"/login"}>I already have an account</Link>
+                                </div>
+
+                                <Btn btnClass={"btn btn-custom-yellow w-100"} content={"Sign Up"} onClick={onSignup} />
+                            </form>
+                        </div>
                     </div>
-
-                    <div className="text-center mb-2">
-                        <Link className="text-custom-blue text-decoration-none" to={"/login"}>I already have an account</Link>
-                    </div>
-
-                    <Btn btnClass={"btn btn-custom-yellow"} content={"Sign Up"} onClick={onSignup} />
-
-                    <ToastContainer
-                        position="top-center"
-                        autoClose={2500}
-                        hideProgressBar={false}
-                        newestOnTop={false}
-                        closeOnClick={false}
-                        rtl={false}
-                        pauseOnFocusLoss
-                        draggable
-                        pauseOnHover
-                        theme="dark"
-                    />
                 </div>
             </div>
 
+            <ToastContainer position="top-center" autoClose={1000} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
         </div>
     )
 }
