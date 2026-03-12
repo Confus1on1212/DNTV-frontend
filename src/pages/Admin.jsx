@@ -12,8 +12,6 @@ export default function Admin() {
     const [user, setUser] = useState(null);
     const isAdmin = user?.role === 1
 
-    console.log(user, isAdmin);
-
     useEffect(() => {
         async function checkSession() {
             try {
@@ -21,7 +19,7 @@ export default function Admin() {
                 if (data && !data.error) {
                     setUser(data);
 
-                    if (!isAdmin) {
+                    if (data.role !== 1) {
                         toast.error("Nincs jogosultságod az oldal megtekintéséhez!", {
                             onClose: () => navigate('/')
                         })
@@ -70,7 +68,7 @@ export default function Admin() {
             <Header user={user} onLogOut={onLogout} />
 
             {isAdmin &&
-            <div className="container m-5 blurry-light rounded">
+            <div className="container m-5 blurry-light rounded mx-auto">
                 <h1>Admin Felület</h1>
                 <h4>Username: {user.username}</h4>
                 <hr />

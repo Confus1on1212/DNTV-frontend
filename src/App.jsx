@@ -93,9 +93,9 @@ function App() {
               searchParams.append('season', slide.season);
               searchParams.append('episode', slide.episodeid);
               
-              const seasonNum = String(slide.season).padStart(2, '0');
-              const episodeNum = String(slide.episodeid).padStart(2, '0');
-              displayTitle = `${displayTitle} S${seasonNum}E${episodeNum}`;
+              // const seasonNum = String(slide.season).padStart(2, '0');
+              // const episodeNum = String(slide.episodeid).padStart(2, '0');
+              // displayTitle = `${displayTitle} S${seasonNum}E${episodeNum}`;
             }
 
             
