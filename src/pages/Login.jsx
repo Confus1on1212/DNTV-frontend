@@ -7,7 +7,7 @@ import Header from "../components/Header.jsx";
 import InputField from "../components/InputField.jsx";
 import Btn from "../components/Btn.jsx";
 
-import { login } from '../user.js'
+import { login } from '../api/user.js'
 
 export default function Login() {
   const navigate = useNavigate();

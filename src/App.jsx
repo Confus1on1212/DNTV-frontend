@@ -4,12 +4,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Carousel } from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
 import Header from "./components/Header.jsx";
-import Btn from "./components/Btn.jsx";
 import CarouselCard from "./components/CarouselCard.jsx"
 
 
-import { getFeatured } from "./videos.js";
-import { whoami, logout } from "./user.js";
+import { getRandomProjects } from "./api/videos.js";
+import { whoami, logout } from "./api/user.js";
 
 function generateSlug(title) {
   return title
@@ -30,8 +29,8 @@ function App() {
     // CAROUSEL SLIDES 
     const fetchSlides = async () => {
       try {
-        const data = await getFeatured(6);
-        console.log(data);
+        const data = await getRandomProjects(6);
+        // console.log(data);
         if (Array.isArray(data)) {
           setSlides(data);
         } else {
@@ -78,7 +77,7 @@ function App() {
 
   return (
     <div className="app-root">
-      <Header user={user} onLogOut={onLogout} />
+      <Header user={user} onLogOut={onLogout} onAdminPage={false}/>
       <div className="carousel-wrapper">
         <Carousel className="carousel" autoplay={{ dotDuration: true }} autoplaySpeed={5000}>
           {featuredProjectsSlides.map((slide) => {
@@ -108,7 +107,7 @@ function App() {
             const linkState = { cover: slide.cover };
 
             return (
-              <CarouselCard uniqueKey={uniqueKey} cover={slide.cover} displayTitle={displayTitle} description={slide.description} finalUrl={finalUrl} linkState={linkState} />
+              <CarouselCard key={uniqueKey} cover={slide.cover} displayTitle={displayTitle} description={slide.description} finalUrl={finalUrl} linkState={linkState} />
             )
           })}
         </Carousel>

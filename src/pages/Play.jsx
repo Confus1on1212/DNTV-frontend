@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 import test from '../assets/testvideo.mp4'
 
-import { whoami, logout } from "../user.js";
+import { whoami, logout } from "../api/user.js";
 
 export default function Play() {
     const [user, setUser] = useState(null);
