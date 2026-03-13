@@ -7,7 +7,7 @@ import Header from "../components/Header.jsx";
 import InputField from "../components/InputField.jsx";
 import Btn from "../components/Btn.jsx";
 
-import { register, login } from '../user.js'
+import { register, login } from '../api/user.js'
 
 export default function Signup() {
     const [showPassword, setShowPassword] = useState(false)

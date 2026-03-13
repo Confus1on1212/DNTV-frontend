@@ -37,21 +37,18 @@ body {
 }
 
 .overlay {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.4);
   height: 100%;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; 
-  align-items: center;
   color: white;
-  text-align: center;
-  padding: 1rem;
+  display: flex; 
+  justify-content: flex-start;
+  align-items: flex-end; 
+  padding: 2rem; 
 }
 
 .overlay h1 {
   text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-  font-size: 2.2rem;
   font-weight: bold;
 }
 
@@ -60,6 +57,29 @@ body {
   text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
   max-width: 90%;
   margin: 1rem auto;
+  justify-content: flex-start;
+}
+
+.carousel-text-container {
+  text-align: left; 
+  width: 100%;
+}
+
+.carousel-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+.carousel-description {
+  font-size: 0.9rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* KOZEPES MERET */
@@ -67,12 +87,16 @@ body {
   .carousel-wrapper {
     height: 500px;
   }
-  .overlay h1 {
+  .overlay {
+    padding: 4rem;
+  }
+  .carousel-title {
     font-size: 3.5rem;
   }
-  .overlay p {
-    font-size: 1.25rem;
-    max-width: 600px;
+  .carousel-description {
+    font-size: 1.1rem;
+    width: 70%; 
+    -webkit-line-clamp: 4;
   }
 }
 
@@ -80,6 +104,16 @@ body {
 @media (min-width: 992px) {
   .carousel-wrapper {
     height: 600px;
+  }
+  .overlay {
+    padding: 5rem;
+  }
+  .carousel-title {
+    font-size: 4.5rem;
+  }
+  .carousel-description {
+    font-size: 1.25rem;
+    width: 50%;
   }
 }
 

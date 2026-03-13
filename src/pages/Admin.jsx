@@ -4,15 +4,20 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Header from "../components/Header.jsx";
-import { whoami, logout } from "../user.js";
+import { whoami, logout } from "../api/user.js";
+import { getAllUsers } from '../api/admin.js'
+import {  getAllMovies, getAllShows } from '../api/videos.js'
 
 export default function Admin() {
     const navigate = useNavigate();
 
     const [user, setUser] = useState(null);
+    const [allUsers, setAllUsers] = useState([])
+    const [movies, setMovies] = useState([])
+    const [shows, setShows] = useState([])
+
     const isAdmin = user?.role === 1
 
-    console.log(user, isAdmin);
 
     useEffect(() => {
         async function checkSession() {
@@ -21,7 +26,7 @@ export default function Admin() {
                 if (data && !data.error) {
                     setUser(data);
 
-                    if (!isAdmin) {
+                    if (data.role !== 1) {
                         toast.error("Nincs jogosultságod az oldal megtekintéséhez!", {
                             onClose: () => navigate('/')
                         })
@@ -39,7 +44,53 @@ export default function Admin() {
             }
         }
 
+        async function getUsers() {
+            try {
+                const data = await getAllUsers()
+                // console.log(data);
+                if(data.error) {
+                    toast.error('Hiba', data.error)
+                } else {
+                    setAllUsers(data)
+                }
+            } catch (err) {
+                toast.error('Hiba a felhasználók lekérdezése során')
+            }
+        }
+
+        async function getMovies() {
+            try {
+                const data = await getAllMovies()
+                if(data.error) {
+                    toast.error('Hiba', data.error)
+                } else {
+                    setMovies(data)
+                }
+            } catch (err) {
+                toast.error('Hiba a filmek lekérdezése során')
+            }
+        }
+
+        async function getShows() {
+            try {
+                const data = await getAllShows()
+                if(data.error) {
+                    toast.error('Hiba', data.error)
+                } else {
+                    setShows(data)
+                }
+            } catch (err) {
+                toast.error('Hiba a sorozatok lekérdezése során')
+            }
+        }
+
         checkSession();
+        getUsers();
+        getMovies()
+        getShows()
+        console.log(allUsers);
+        console.log(movies);
+        console.log(shows);
     }, [navigate]);
 
     async function onLogout() {
@@ -67,16 +118,17 @@ export default function Admin() {
 
     return (
         <div className="min-vh-100 scenic-background">
-            <Header user={user} onLogOut={onLogout} />
+            <Header user={user} onLogOut={onLogout} onAdminPage={true}/>
 
-            {isAdmin &&
-            <div className="container m-5 blurry-light rounded">
-                <h1>Admin Felület</h1>
-                <h4>Username: {user.username}</h4>
+            {isAdmin && 
+            <div className="container m-5 blurry-light rounded mx-auto">
+                <h1>Admin Felület, username: <span className="text-custom-yellow">{user.username}</span></h1>
                 <hr />
             </div>}
+
             
-            <ToastContainer position="top-center" autoClose={1000} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
+            
+            <ToastContainer position="top-center" autoClose={2000} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
         </div>
     );
 }
