@@ -5,7 +5,11 @@ import { Carousel } from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
 import Header from "./components/Header.jsx";
 import CarouselCard from "./components/CarouselCard.jsx"
+import { Swiper, SwiperSlide } from 'swiper/react';
+import Footer from "./components/Footer.jsx";
 
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 import { getRandomProjects } from "./api/videos.js";
 import { whoami, logout } from "./api/user.js";
@@ -37,6 +41,7 @@ function App() {
           toast.error("Hiba") // ha nem arra
         }
       } catch (error) {
+        toast.error(error)
         console.error("Hiba a lekérés során:", error);
       }
     };
@@ -111,6 +116,121 @@ function App() {
             )
           })}
         </Carousel>
+
+        <div className="category-slider">
+          <h2 style={{ color: 'white', marginLeft: '10px' }}>Top-rated TV series</h2>
+          <Swiper
+            spaceBetween={15}
+            slidesPerView={2.2}
+            breakpoints={{
+              1024: {
+                slidesPerView: 5.5,
+                spaceBetween: 20
+              }
+            }}
+            onSlideChange={() => console.log('slide change')}
+          >
+            {featuredProjectsSlides.map((slide) => (
+              <SwiperSlide key={slide.movieid}>
+                <div className="movie-card">
+                  <img 
+                    src={slide.cover} 
+                    alt={slide.title} 
+                    style={{ width: '100%', borderRadius: '8px', cursor: 'pointer' }} 
+                  />
+                  <div className="trending-tag">TRENDING</div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <div className="category-slider">
+          <h2 style={{ color: 'white', marginLeft: '10px' }}>Trending</h2>
+          <Swiper
+            spaceBetween={15}
+            slidesPerView={2.2}
+            breakpoints={{
+              1024: {
+                slidesPerView: 5.5,
+                spaceBetween: 20
+              }
+            }}
+            onSlideChange={() => console.log('slide change')}
+          >
+            {featuredProjectsSlides.map((slide) => (
+              <SwiperSlide key={slide.movieid}>
+                <div className="movie-card">
+                  <img 
+                    src={slide.cover} 
+                    alt={slide.title} 
+                    style={{ width: '100%', borderRadius: '8px', cursor: 'pointer' }} 
+                  />
+                  <div className="trending-tag">TRENDING</div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <div className="category-slider">
+          <h2 style={{ color: 'white', marginLeft: '10px' }}>Top-rated Movies</h2>
+          <Swiper
+            spaceBetween={15}
+            slidesPerView={2.2}
+            breakpoints={{
+              1024: {
+                slidesPerView: 5.5,
+                spaceBetween: 20
+              }
+            }}
+            onSlideChange={() => console.log('slide change')}
+          >
+            {featuredProjectsSlides.map((slide) => (
+              <SwiperSlide key={slide.movieid}>
+                <div className="movie-card">
+                  <img 
+                    src={slide.cover} 
+                    alt={slide.title} 
+                    style={{ width: '100%', borderRadius: '8px', cursor: 'pointer' }} 
+                  />
+                  <div className="trending-tag">TRENDING</div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <div className="category-slider">
+          <h2 style={{ color: 'white', marginLeft: '10px' }}>Top-rated Movies</h2>
+          <Swiper
+            spaceBetween={15}
+            slidesPerView={2.2}
+            breakpoints={{
+              1024: {
+                slidesPerView: 5.5,
+                spaceBetween: 20
+              }
+            }}
+            onSlideChange={() => console.log('slide change')}
+          >
+            {featuredProjectsSlides.map((slide) => (
+              <SwiperSlide key={slide.movieid}>
+                <div className="movie-card">
+                  <img 
+                    src={slide.cover} 
+                    alt={slide.title} 
+                    style={{ width: '100%', borderRadius: '8px', cursor: 'pointer' }} 
+                  />
+                  <div className="trending-tag">TRENDING</div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <Footer/>     
+
         <ToastContainer position="bottom-right" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
       </div>
     </div>

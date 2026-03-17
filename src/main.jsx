@@ -8,6 +8,9 @@ import Play from './pages/Play.jsx'
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import Admin from './pages/Admin.jsx';
+import Terms from './pages/Terms.jsx';
+import Feedback from './pages/Feedback.jsx';
+import Help from './pages/Help.jsx';
 
 import './style/font.css'
 import './style/main.css'
@@ -24,6 +27,9 @@ createRoot(document.getElementById('root')).render(
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<Signup/>}/>
         <Route path='/admin' element={<Admin/>}/>
+        <Route path='/termsandpolicies' element={<Terms/>}/>
+        <Route path='/feedback' element={<Feedback/>}/>
+        <Route path='/help' element={<Help/>}/>
       </Routes>
     </BrowserRouter>
   </StrictMode>,
