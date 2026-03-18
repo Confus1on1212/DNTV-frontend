@@ -1,39 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Button = () => {
-  return (
-    <StyledWrapper>
-      <button>
-        <div className="svg-wrapper-1">
-          <div className="svg-wrapper">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={24} height={24}>
-              <path fill="none" d="M0 0h24v24H0z" />
-              <path fill="currentColor" d="M8.752 5.439l10.508 6.13a.5.5 0 0 1 0 .863l-10.508 6.13A.5.5 0 0 1 7 18.128V5.871a.5.5 0 0 1 .752-.432z" />
-            </svg>
-          </div>
-        </div>
-        <span className='text-decoration-none'>Play</span>
-      </button>
-    </StyledWrapper>
-  );
-}
-
 const StyledWrapper = styled.div`
   button {
     font-family: inherit;
-    font-size: 20px;
-    background: #ff9705;
+    background: #c88630; 
     color: white;
-    padding: 0.7em 1em;
-    padding-left: 0.9em;
-    display: flex;
-    align-items: center;
     border: none;
-    border-radius: 16px;
     overflow: hidden;
     transition: all 0.2s;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    //valtozos cucc
+    font-size: ${props => (props.size === 'large' ? '20px' : '14px')};
+    padding: ${props => (props.size === 'large' ? '0.7em 1em' : '0.5em 0.8em')};
+    padding-left: ${props => (props.size === 'large' ? '0.9em' : '0.6em')};
+    border-radius: ${props => (props.size === 'large' ? '16px' : '12px')};
   }
 
   button span {
@@ -53,13 +37,19 @@ const StyledWrapper = styled.div`
   }
 
   button:hover svg {
-    transform: translateX(1.2em) scale(1.1);
+    transform: ${props =>
+      props.size === 'large'
+        ? 'translateX(1.2em) scale(1.1)'
+        : 'translateX(0.8em) scale(1.1)'};
   }
 
   button:hover span {
-    transform: translateX(5em);
+    /* A szöveg eltolásának mértéke is a gomb méretétől függ */
+    transform: ${props =>
+      props.size === 'large' ? 'translateX(5em)' : 'translateX(4em)'};
   }
 
+  
   button:active {
     transform: scale(0.95);
   }
@@ -68,10 +58,25 @@ const StyledWrapper = styled.div`
     from {
       transform: translateY(0.1em);
     }
-
     to {
       transform: translateY(-0.1em);
     }
   }`;
 
-export default Button;
+export default function CustomPlayBtn({ size = 'large', className = '' }) {
+  return (
+    <StyledWrapper size={size} className={className}>
+      <button>
+        <div className="svg-wrapper-1">
+          <div className="svg-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={24} height={24}>
+              <path fill="none" d="M0 0h24v24H0z" />
+              <path fill="currentColor" d="M8.752 5.439l10.508 6.13a.5.5 0 0 1 0 .863l-10.508 6.13A.5.5 0 0 1 7 18.128V5.871a.5.5 0 0 1 .752-.432z" />
+            </svg>
+          </div>
+        </div>
+        <span>Play</span>
+      </button>
+    </StyledWrapper>
+  );
+}
