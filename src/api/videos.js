@@ -39,3 +39,39 @@ export async function getAllShows() {
     }
     return await res.json()
 }
+
+export async function getTopRatedTVseries(count) {
+    const res = await fetch(`/videos/getTopRatedTVseries/${count}`, {
+        method: 'GET',
+    })
+
+    if (!res.ok) {
+        const data = await res.json()
+        return { error: data?.error }
+    }
+    return await res.json()
+}
+
+export async function getTopRatedTVMovies(count) {
+    const res = await fetch(`/videos/getTopRatedMovies/${count}`, {
+        method: 'GET',
+    })
+
+    if (!res.ok) {
+        const data = await res.json()
+        return { error: data?.error }
+    }
+    return await res.json()
+}
+
+export async function getTopRatedTVSeriesAndMovies(count) {
+    const res = await fetch(`/videos/getTopRatedTVSeriesAndMovies/${count}`, {
+        method: 'GET',
+    })
+
+    if (!res.ok) {
+        const data = await res.json()
+        return { error: data?.error }
+    }
+    return await res.json()
+}

@@ -5,13 +5,13 @@ import { Carousel } from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
 import Header from "./components/Header.jsx";
 import CarouselCard from "./components/CarouselCard.jsx"
-import { Swiper, SwiperSlide } from 'swiper/react';
 import Footer from "./components/Footer.jsx";
+import Slider from "./components/Slider.jsx";
 
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-import { getRandomProjects } from "./api/videos.js";
+import { getRandomProjects, getTopRatedTVseries, getTopRatedTVMovies, getTopRatedTVSeriesAndMovies } from "./api/videos.js";
 import { whoami, logout } from "./api/user.js";
 
 function generateSlug(title) {
@@ -25,24 +25,37 @@ function generateSlug(title) {
 function App() {
   const [user, setUser] = useState(null)
 
-  const [featuredProjectsSlides, setSlides] = useState([]);
+  const [featuredSlides, setFeaturedSlides] = useState([]);
+  const [topRatedProjects, setTopRatedProjects] = useState([])
+  const [topRatedSeries, setTopRatedSeries] = useState([]);
+  const [topRatedMovies, setTopRatedMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate()
 
   useEffect(() => {
-    // CAROUSEL SLIDES 
-    const fetchSlides = async () => {
+    // CAROUSEL SLIDES and  
+    const fetchAllData = async () => {
       try {
-        const data = await getRandomProjects(6);
-        // console.log(data);
-        if (Array.isArray(data)) {
-          setSlides(data);
-        } else {
-          toast.error("Hiba") // ha nem arra
-        }
+        setIsLoading(true);
+
+        const [featuredData, topRatedData, topRatedMovieData, topRatedSeriesData] = await Promise.all([ //megvarja hogy mind valaszt adjon
+          getRandomProjects(6),
+          getTopRatedTVSeriesAndMovies(10),
+          getTopRatedTVMovies(10),
+          getTopRatedTVseries(10)
+        ]);
+
+        setFeaturedSlides(featuredData); // carousel
+        setTopRatedProjects(topRatedData); 
+        setTopRatedSeries(topRatedSeriesData); // top rated show
+        setTopRatedMovies(topRatedMovieData);
+
       } catch (error) {
-        toast.error(error)
-        console.error("Hiba a lekérés során:", error);
+        toast.error("Hiba történt az adatok betöltése során.");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -55,7 +68,7 @@ function App() {
         if (data && !data.error) {
           setUser(data);
         } else {
-          toast.error("Nem vagy bejelentkezve"); // ha nincs cookie 
+          // toast.error("Nem vagy bejelentkezve"); // ha nincs cookie 
           setUser(null);
         }
       } catch (err) {
@@ -63,9 +76,8 @@ function App() {
       }
     }
 
-    checkSession();
-    fetchSlides();
-    // console.log(featuredProjectsSlides);
+    checkSession()
+    fetchAllData()
   }, []);
 
   async function onLogout() {
@@ -85,7 +97,7 @@ function App() {
       <Header user={user} onLogOut={onLogout} onAdminPage={false}/>
       <div className="carousel-wrapper">
         <Carousel className="carousel" autoplay={{ dotDuration: true }} autoplaySpeed={5000}>
-          {featuredProjectsSlides.map((slide) => {
+          {featuredSlides.map((slide) => {
             const uniqueKey = slide.episodeid ? `${slide.movieid}-${slide.episodeid}` : slide.movieid; // ha nincs episodeid akkor movie- nem kell episodeid a slugba
 
             const slug = generateSlug(slide.title);
@@ -116,118 +128,11 @@ function App() {
             )
           })}
         </Carousel>
-
-        <div className="category-slider">
-          <h2 style={{ color: 'white', marginLeft: '10px' }}>Top-rated TV series</h2>
-          <Swiper
-            spaceBetween={15}
-            slidesPerView={2.2}
-            breakpoints={{
-              1024: {
-                slidesPerView: 5.5,
-                spaceBetween: 20
-              }
-            }}
-            onSlideChange={() => console.log('slide change')}
-          >
-            {featuredProjectsSlides.map((slide) => (
-              <SwiperSlide key={slide.movieid}>
-                <div className="movie-card">
-                  <img 
-                    src={slide.cover} 
-                    alt={slide.title} 
-                    style={{ width: '100%', borderRadius: '8px', cursor: 'pointer' }} 
-                  />
-                  <div className="trending-tag">TRENDING</div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-
-        <div className="category-slider">
-          <h2 style={{ color: 'white', marginLeft: '10px' }}>Trending</h2>
-          <Swiper
-            spaceBetween={15}
-            slidesPerView={2.2}
-            breakpoints={{
-              1024: {
-                slidesPerView: 5.5,
-                spaceBetween: 20
-              }
-            }}
-            onSlideChange={() => console.log('slide change')}
-          >
-            {featuredProjectsSlides.map((slide) => (
-              <SwiperSlide key={slide.movieid}>
-                <div className="movie-card">
-                  <img 
-                    src={slide.cover} 
-                    alt={slide.title} 
-                    style={{ width: '100%', borderRadius: '8px', cursor: 'pointer' }} 
-                  />
-                  <div className="trending-tag">TRENDING</div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-
-        <div className="category-slider">
-          <h2 style={{ color: 'white', marginLeft: '10px' }}>Top-rated Movies</h2>
-          <Swiper
-            spaceBetween={15}
-            slidesPerView={2.2}
-            breakpoints={{
-              1024: {
-                slidesPerView: 5.5,
-                spaceBetween: 20
-              }
-            }}
-            onSlideChange={() => console.log('slide change')}
-          >
-            {featuredProjectsSlides.map((slide) => (
-              <SwiperSlide key={slide.movieid}>
-                <div className="movie-card">
-                  <img 
-                    src={slide.cover} 
-                    alt={slide.title} 
-                    style={{ width: '100%', borderRadius: '8px', cursor: 'pointer' }} 
-                  />
-                  <div className="trending-tag">TRENDING</div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-
-        <div className="category-slider">
-          <h2 style={{ color: 'white', marginLeft: '10px' }}>Top-rated Movies</h2>
-          <Swiper
-            spaceBetween={15}
-            slidesPerView={2.2}
-            breakpoints={{
-              1024: {
-                slidesPerView: 5.5,
-                spaceBetween: 20
-              }
-            }}
-            onSlideChange={() => console.log('slide change')}
-          >
-            {featuredProjectsSlides.map((slide) => (
-              <SwiperSlide key={slide.movieid}>
-                <div className="movie-card">
-                  <img 
-                    src={slide.cover} 
-                    alt={slide.title} 
-                    style={{ width: '100%', borderRadius: '8px', cursor: 'pointer' }} 
-                  />
-                  <div className="trending-tag">TRENDING</div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
+        
+        
+        <Slider title="Top-Rated " slides={topRatedProjects} isLoading={isLoading} />
+        <Slider title="Top-rated TV series" slides={topRatedSeries} isLoading={isLoading} />
+        <Slider title="Top-rated Movies" slides={topRatedMovies} isLoading={isLoading} />
 
         <Footer/>     
 
