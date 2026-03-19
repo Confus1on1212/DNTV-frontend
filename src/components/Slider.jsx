@@ -46,22 +46,35 @@ export default function Slider({ title, slides, isLoading }) {
             searchParams.append('season', slide.season);
             searchParams.append('episode', slide.episodeid);
           }
-          const finalUrl = `/play/${slug}?${searchParams.toString()}`;
-          const linkState = { cover: slide.cover };
+
+          if (slide.secondsWatched > 0) {
+            searchParams.append('t', slide.secondsWatched);
+          }
+          
+          const queryString = searchParams.toString();
+          const finalUrl = `/play/${slug}${queryString ? `?${queryString}` : ''}`;
+          
+          const linkState = { 
+            cover: slide.cover,
+            id: slide.movieid 
+          };
+          
           const uniqueKey = slide.episodeid ? `${slide.movieid}-${slide.episodeid}` : slide.movieid;
 
           return (
             <SwiperSlide key={uniqueKey}>
-              <Link to={finalUrl} state={linkState} className="movie-card-link">
+              <div className="movie-card-link">
                 <div className="movie-card" style={{ backgroundImage: `url(${BASE_URL}/uploads/covers/${slide.cover})` }}>
                   <div className="movie-card-overlay">
                     <p className='movie-card-title'>{slide.title.replace(/_/g, ' ')}</p>
                     <div className="play-button-wrapper">
-                      <CustomPlayBtn size='small'/>
+                      <Link to={finalUrl} state={linkState} className="text-decoration-none">
+                        <CustomPlayBtn size='small' />
+                      </Link>
                     </div>
                   </div>
                 </div>
-              </Link>
+              </div>
             </SwiperSlide>
           );
         })}
