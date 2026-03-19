@@ -75,3 +75,17 @@ export async function getTopRatedTVSeriesAndMovies(count) {
     }
     return await res.json()
 }
+
+export async function getMovie(id) {
+    const res = await fetch(`/videos/getMovie?movieid=${id}`, {
+        method: 'GET',
+        credentials: "include"
+    })
+    const data = await res.json()
+    if (!res.ok) {
+        console.error("Szerverhiba:", data);
+        
+        throw new Error(data.error || 'Ismeretlen hiba történt a film lekérésekor.');
+    }
+    return data[0];
+}

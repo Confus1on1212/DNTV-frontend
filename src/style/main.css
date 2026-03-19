@@ -53,8 +53,10 @@ body {
 }
 
 .carousel-text-container {
-  text-align: left; 
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .carousel-title {

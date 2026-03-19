@@ -4,32 +4,24 @@ import { Link, useNavigate, useParams, useSearchParams, useLocation } from 'reac
 import Header from "../components/Header.jsx";
 import { ToastContainer, toast } from 'react-toastify';
 
-import test from '../assets/testvideo.mp4'
-
 import { whoami, logout } from "../api/user.js";
+import { getMovie } from "../api/videos.js"
+
+const BASE_URL = "http://192.168.9.105:4000";
 
 export default function Play() {
     const [user, setUser] = useState(null);
-    const [videoSrc, setVideoSrc] = useState(null);
-    const navigate = useNavigate();
+    const [mediaData, setMediaData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const { slug } = useParams(); 
-    const [searchParams] = useSearchParams(); 
+    const navigate = useNavigate();
     const location = useLocation();
 
-    const title = slug.replace(/-/g, ' ');
-    const season = searchParams.get('season');   
-    const episode = searchParams.get('episode')
-    const secondsWatched = searchParams.get('t') || 0;
-    const cover = location.state?.cover // amit atad a Link state= ben
+    const { slug } = useParams();
 
-
-    // console.log('Title:', title);
-    // console.log('Season:', season);
-    // console.log('Episode:', episode);
-    // console.log('Start time:', secondsWatched);
-    // console.log('Cover:', cover);
-    // console.log(`Poster URL: http://192.168.9.105:4000/uploads/covers/${cover}`);
+    const mediaId = location.state?.id;
+    const cover = location.state?.cover; // amit atad a Link state= ben
+    const secondsWatched = new URLSearchParams(location.search).get('t') || 0;
 
     useEffect(() => {
         // USER COOKIE CUCC
@@ -41,7 +33,7 @@ export default function Play() {
                 if (data && !data.error) {
                     setUser(data);
                 } else {
-                    toast.error("Nem vagy bejelentkezve"); // ha nincs cookie 
+                    toast.error("Nem vagy bejelentkezve"); // ha nincs cookie
                     setUser(null);
                 }
             } catch (err) {
@@ -49,17 +41,25 @@ export default function Play() {
             }
         }
 
-        async function checkPlayer() {
+        async function fetchMedia() {
+            setIsLoading(true);
             try {
-                setVideoSrc(test)
+                console.log(mediaId);
+                const data = await getMovie(mediaId);
+                setMediaData(data); // A teljes objektumot elmentjük
             } catch (err) {
-                console.log(err);
-                toast.error("Hiba a video lejátszása közben")
+                console.error(err);
+                toast.error(err.message || "Hiba a videó betöltése közben.");
+                // Hiba esetén visszanavigálhatunk
+                // navigate('/');
+            } finally {
+                setIsLoading(false);
             }
         }
 
         checkSession();
-        checkPlayer();
+        fetchMedia();
+        // console.log(mediaData);
     }, [slug]);
 
     async function onLogout() {
@@ -74,28 +74,38 @@ export default function Play() {
         navigate('/')
     }
 
+    if (isLoading) {
+        return (
+            <div className="vh-100 d-flex justify-content-center align-items-center bg-dark">
+                <div className="spinner-border text-light" role="status"></div>
+                <ToastContainer position="bottom-right" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
+            </div>
+        );
+    }
+
+    if (!mediaData) {
+        return <div>A tartalom betöltése sikertelen.</div>;
+    }
+
     return (
-        <div>
+        <div className="min-vh-100">
             <Header user={user} onLogOut={onLogout} />
-            <div className="vh-100">
-                {videoSrc ? (
-                    <video width={"100%"} height={"95%"} controls loop={false} poster={cover ? `http://192.168.9.105:4000/uploads/covers/${cover}` : ''} preload="auto" autoPlay onLoadedMetadata={(e) => {
-                        e.target.currentTime = secondsWatched;
-                    }}>
-                        <source src={test} type="video/mp4" />
-                        Your browser is not supported
-                    </video>
-                ) : (
-                    <div className="d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
-                        <div className="spinner-border text-light" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                )}
+            <div className="container-fluid p-0">
+                {/* A video forrása a mediaData objektumból jön */}
+                <video key={mediaData.video_filename} width="100%" height="auto" controls autoPlay poster={cover ? `${BASE_URL}/uploads/covers/${cover}` : ''} onLoadedMetadata={(e) => { e.target.currentTime = secondsWatched; }}>
+                    <source src={`${BASE_URL}/uploads/movies/${mediaData.file}`} type="video/mp4" />
+                    A böngésződ nem támogatja a videó lejátszást.
+                </video>
+            </div>
+
+            <div className="container mt-4 text-light">
+                <h1>{mediaData.title}</h1>
+                <p className="text-muted">{mediaData.description}</p>
+                
+
             </div>
 
             <ToastContainer position="bottom-right" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
         </div>
-
-    )
+    );
 }

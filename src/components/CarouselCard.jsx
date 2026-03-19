@@ -9,7 +9,7 @@ export default function CarouselCard({cover, displayTitle, description, finalUrl
                 <div className="container carousel-text-container">
                     <h1 className="carousel-title">{displayTitle}</h1>
                     <p className="carousel-description">{description}</p>
-                    <Link to={finalUrl} state={linkState} className="text-decoration-none w-auto">
+                    <Link to={finalUrl} state={linkState} className="text-decoration-none">
                         <CustomPlayBtn size="large"/>
                     </Link>
                 </div>

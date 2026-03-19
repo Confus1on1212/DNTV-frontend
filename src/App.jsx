@@ -96,7 +96,7 @@ function App() {
     <div className="app-root">
       <Header user={user} onLogOut={onLogout} onAdminPage={false}/>
       <div className="carousel-wrapper">
-        <Carousel className="carousel" autoplay={{ dotDuration: true }} autoplaySpeed={5000}>
+        <Carousel className="carousel" autoplay={{ dotDuration: true }} autoplaySpeed={5000} draggable={true} arrows arrowSize={32} dotHeight={6}>
           {featuredSlides.map((slide) => {
             const uniqueKey = slide.episodeid ? `${slide.movieid}-${slide.episodeid}` : slide.movieid; // ha nincs episodeid akkor movie- nem kell episodeid a slugba
 
@@ -115,13 +115,16 @@ function App() {
             }
 
             
-            if (slide.secondsWatched > 0) { // HA mar belekezdett a nezesbe, nemfix hogy kelleni fog
+            if (slide.secondsWatched > 0) { // HA mar belekezdett a nezesbe, nemfix hogy kelleni foge
               searchParams.append('t', slide.secondsWatched);
             }
 
             const queryString = searchParams.toString();
-            const finalUrl = `/play/${slug}${queryString ? `?${queryString}` : ''}`;
-            const linkState = { cover: slide.cover };
+            const finalUrl = `/play/${slug}?${queryString}`;
+            const linkState = { 
+                cover: slide.cover,
+                id: slide.movieid 
+            };
 
             return (
               <CarouselCard key={uniqueKey} cover={slide.cover} displayTitle={displayTitle} description={slide.description} finalUrl={finalUrl} linkState={linkState} />
