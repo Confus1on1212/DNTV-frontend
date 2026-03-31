@@ -11,6 +11,7 @@ import Admin from './pages/Admin.jsx';
 import Terms from './pages/Terms.jsx';
 import Feedback from './pages/Feedback.jsx';
 import Help from './pages/Help.jsx';
+import Detail from './pages/Detail.jsx';
 
 import './style/font.css'
 import './style/main.css'
@@ -30,6 +31,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='/termsandpolicies' element={<Terms/>}/>
         <Route path='/feedback' element={<Feedback/>}/>
         <Route path='/help' element={<Help/>}/>
+        <Route path='/details/:slug' element={<Detail/>}/>
       </Routes>
     </BrowserRouter>
   </StrictMode>,

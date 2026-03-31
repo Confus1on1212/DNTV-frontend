@@ -21,6 +21,11 @@ export default defineConfig({
         target: 'http://192.168.9.105:4000',
         changeOrigin: true,
         secure: false,
+      },
+      '/feedback': {
+        target: 'http://192.168.9.105:4000',
+        changeOrigin: true,
+        secure: false,
       }
     }
   }

@@ -50,3 +50,25 @@ export async function logout() {
     }
     return await res.json()
 }
+
+export async function sendFeedback(feedbackData) {
+    console.log("Adatok küldése a szervernek:", feedbackData);
+
+    const res = await fetch(`/feedback/postFeedback`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(feedbackData)
+    });
+
+    const responseData = await res.json();
+    
+    if (!res.ok) {
+        // Ha a szerver hibát küld, dobunk egy Error-t, amit a catch blokk el tud kapni
+        throw new Error(responseData.error || 'Hiba a visszajelzés küldésekor.');
+    }
+    
+    return responseData;
+}
