@@ -120,7 +120,7 @@ function App() {
             }
 
             const queryString = searchParams.toString();
-            const finalUrl = `/play/${slug}?${queryString}`;
+            const finalUrl = `/details/${slug}?${queryString}`;
             const linkState = { 
                 cover: slide.cover,
                 id: slide.movieid 

@@ -1,5 +1,3 @@
-// src/components/Slider.jsx
-
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Link } from 'react-router-dom'; // Helyes import a react-router-dom-ból
 
@@ -14,7 +12,7 @@ function generateSlug(title) {
   return title.toLowerCase().replace(/ /g, '-').replace(/_/g, '-').replace(/[^\w-]+/g, ''); // space -> -, _ -> -,  
 }
 
-export default function Slider({ title, slides, isLoading }) {
+export default function Slider({ title, slides, isLoading, isEpisodeSlider }) {
   if (isLoading) {
     return (
       <div className="category-slider">
@@ -42,22 +40,29 @@ export default function Slider({ title, slides, isLoading }) {
         {slides.map((slide) => {
           const slug = generateSlug(slide.title);
           const searchParams = new URLSearchParams();
-          if (slide.season && slide.episodeid) {
-            searchParams.append('season', slide.season);
-            searchParams.append('episode', slide.episodeid);
-          }
 
-          if (slide.secondsWatched > 0) {
-            searchParams.append('t', slide.secondsWatched);
+          let finalUrl = '';
+          let linkState = {};
+
+          if (isEpisodeSlider) {
+            // HA EPIZÓD SLIDER
+            searchParams.append('season', slide.season);
+            searchParams.append('episode', slide.episode);
+
+            finalUrl = `/play/${slug}?${searchParams.toString()}`;
+            linkState = {
+              id: slide.showid, // Az epizód a sorozat ID-ját örökli
+              cover: slide.cover, // Az epizódnak lehet saját borítója
+              is_show: true
+            };
+          } else {
+            // HA FŐOLDAL
+            finalUrl = `/details/${slug}`;
+            linkState = {
+              id: slide.showid || slide.movieid,
+              cover: slide.cover
+            };
           }
-          
-          const queryString = searchParams.toString();
-          const finalUrl = `/play/${slug}${queryString ? `?${queryString}` : ''}`;
-          
-          const linkState = { 
-            cover: slide.cover,
-            id: slide.movieid 
-          };
           
           const uniqueKey = slide.episodeid ? `${slide.movieid}-${slide.episodeid}` : slide.movieid;
 

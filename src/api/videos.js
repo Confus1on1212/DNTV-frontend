@@ -89,3 +89,32 @@ export async function getMovie(id) {
     }
     return data[0];
 }
+
+export async function getShowEpisodes(id) {
+    const res = await fetch(`/videos/getShowEpisodes?showid=${id}`, {
+        method: 'GET',
+        credentials: "include"
+    })
+    const data = await res.json()
+    if (!res.ok) {
+        console.error("Szerverhiba:", data);
+        
+        throw new Error(data.error || 'Ismeretlen hiba történt a film lekérésekor.');
+    }
+    return data;
+}
+
+export async function getEpisode(id, episode, season) {
+    const res = await fetch(`/videos/getShow?showid=${id}&episode=${episode}&season=${season}`, {
+        method: 'GET',
+        credentials: "include"
+    })
+    const data = await res.json()
+    if (!res.ok) {
+        console.error("Szerverhiba:", data);
+        
+        throw new Error(data.error || 'Ismeretlen hiba történt a episode lekérésekor.');
+    }
+    // console.log(data[0]);
+    return data[0];
+}
