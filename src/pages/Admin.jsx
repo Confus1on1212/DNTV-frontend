@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom'; // A useNavigate-hez is kell
+import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import Header from "../components/Header.jsx";
+import AdminHeader from "../components/AdminHeader.jsx";
 import { whoami, logout } from "../api/user.js";
 import { getAllUsers } from '../api/admin.js'
 import {  getAllMovies, getAllShows } from '../api/videos.js'
@@ -118,13 +118,44 @@ export default function Admin() {
 
     return (
         <div className="min-vh-100 scenic-background">
-            <Header user={user} onLogOut={onLogout} onAdminPage={true}/>
+            <AdminHeader user={user} onLogOut={onLogout}/>
 
             {isAdmin && 
-            <div className="container m-5 blurry-light rounded mx-auto">
-                <h1>Admin Felület, username: <span className="text-custom-yellow">{user.username}</span></h1>
-                <hr />
-            </div>}
+                <div className="container m-5 blurry-light rounded mx-auto">
+                    <div className="mx-auto users">
+                        <h1>Users</h1>
+                        <table className="table table-striped table-secondary table-hover table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>user_id</th>
+                                    <th>username</th>
+                                    <th>email</th>
+                                    <th>role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {allUsers.map((user) => (
+                                    <tr key={user.user_id}>
+                                        <td>{user.user_id}</td>
+                                        <td>{user.username}</td>
+                                        <td>{user.email}</td>
+                                        <td>{user.role === 1 ? 'Admin' : 'User'}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <hr />
+                    </div>
+
+                    <div className="mx-auto movies">
+
+                    </div>
+
+                    <div className="mx-auto shows">
+
+                    </div>
+                </div>
+            }
 
             
             
