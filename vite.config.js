@@ -8,22 +8,22 @@ export default defineConfig({
     proxy: {
       // Amikor a fetch azt látja, hogy '/users', átirányítja a backendre
       '/users': {
-        target: 'http://192.168.9.105:4000', // A backend IP-je és portja
+        target: 'http://2.tcp.eu.ngrok.io:11408', // A backend IP-je és portja
         changeOrigin: true,
         secure: false,
       },
       '/videos': {
-        target: 'http://192.168.9.105:4000',
+        target: 'http://2.tcp.eu.ngrok.io:11408',
         changeOrigin: true,
         secure: false,
       },
       '/admin': {
-        target: 'http://192.168.9.105:4000',
+        target: 'http://2.tcp.eu.ngrok.io:11408',
         changeOrigin: true,
         secure: false,
       },
       '/feedback': {
-        target: 'http://192.168.9.105:4000',
+        target: 'http://2.tcp.eu.ngrok.io:11408',
         changeOrigin: true,
         secure: false,
       }

@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getAllMovies, getAllShows, getShowEpisodes } from "../api/videos.js";
 import { login } from "../api/user.js";
 
-const BASE_URL = "http://192.168.9.105:4000";
+const BASE_URL = "http://2.tcp.eu.ngrok.io:11408";
 
 function generateSlug(title) {
     return title.toLowerCase().replace(/ /g, '-').replace(/_/g, '-').replace(/[^\w-]+/g, '');
@@ -38,16 +38,16 @@ export default function Detail() {
         async function fetchData() {
             setIsLoading(true);
             try {
-                const [allMovies, allShows] = await Promise.all([getAllMovies(), getAllShows()]);
-                const allMedia = [...allMovies, ...allShows];
-                const foundMedia = allMedia.find(item => generateSlug(item.title) === slug);
+                const [allMovies, allShows] = await Promise.all([getAllMovies(), getAllShows()]); // lekeri
+                const allMedia = [...allMovies, ...allShows]; // csnal nagy tomab
+                const foundMedia = allMedia.find(item => generateSlug(item.title) === slug); // megkeresi hogy melyik media
 
-                if (!foundMedia) throw new Error("A keresett tartalom nem található.");
+                if (!foundMedia) throw new Error("A keresett tartalom nem található."); 
 
-                setMediaData(foundMedia);
+                setMediaData(foundMedia); // feltolti a mediadatat
 
-                if (foundMedia.showid) {
-                    const allEpisodes = await getShowEpisodes(foundMedia.showid);
+                if (foundMedia.showid) { // ha van showid
+                    const allEpisodes = await getShowEpisodes(foundMedia.showid); // feltolti a 
                     setEpisodesData(allEpisodes);
                 }
             } catch (err) {
