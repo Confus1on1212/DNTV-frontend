@@ -8,8 +8,8 @@ import { ToastContainer, toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 
-import { getAllMovies, getAllShows, getShowEpisodes } from "../api/videos.js";
-import { login } from "../api/user.js";
+import { getAllMovies, getAllShows, getShowEpisodes, getRandomProjects } from "../api/videos.js";
+import { whoami, logout } from "../api/user.js";
 
 const BASE_URL = "http://2.tcp.eu.ngrok.io:11408";
 
@@ -23,6 +23,8 @@ export default function Detail() {
     const [episodesData, setEpisodesData] = useState([]);
     const [filteredEpisodes, setFilteredEpisodes] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [otherProjects, setOtherProjects] = useState([]);
+
 
     const { slug } = useParams();
     const [searchParams] = useSearchParams();
@@ -32,7 +34,41 @@ export default function Detail() {
     const [selectedSeason, setSelectedSeason] = useState(initialSeason);
     const [selectedEpisode, setSelectedEpisode] = useState(initialEpisode);
 
+
     const navigate = useNavigate();
+
+    async function onLogout() {
+        const data = await logout()
+
+        if (data.error) {
+            return toast.error(data.error)
+        }
+        // console.log("hoki" + user);
+        setUser(null)
+        // console.log("asd" + user);
+        navigate('/')
+    }
+
+    useEffect(() => {
+        // USER COOKIE CUCC
+        async function checkSession() {
+            try {
+                const data = await whoami();
+                // console.log("Session Check:", data);
+
+                if (data && !data.error) {
+                    setUser(data);
+                } else {
+                    // toast.error("Nem vagy bejelentkezve"); // ha nincs cookie 
+                    setUser(null);
+                }
+            } catch (err) {
+                console.error("Auth check failed", err);
+            }
+        }
+
+        checkSession()
+    }, []);
 
     useEffect(() => {
         async function fetchData() {
@@ -42,14 +78,17 @@ export default function Detail() {
                 const allMedia = [...allMovies, ...allShows]; // csnal nagy tomab
                 const foundMedia = allMedia.find(item => generateSlug(item.title) === slug); // megkeresi hogy melyik media
 
-                if (!foundMedia) throw new Error("A keresett tartalom nem található."); 
+                if (!foundMedia) throw new Error("A keresett tartalom nem található.");
 
                 setMediaData(foundMedia); // feltolti a mediadatat
 
                 if (foundMedia.showid) { // ha van showid
-                    const allEpisodes = await getShowEpisodes(foundMedia.showid); // feltolti a 
+                    const allEpisodes = await getShowEpisodes(foundMedia.showid); // feltolti a allepisodes - showid alapjan
                     setEpisodesData(allEpisodes);
                 }
+
+                const randomProjects = await getRandomProjects(12);
+                setOtherProjects(randomProjects);
             } catch (err) {
                 toast.error(err.message);
                 navigate('/');
@@ -78,7 +117,7 @@ export default function Detail() {
         setSelectedEpisode(1); // Új évad választásakor visszaállítjuk az epizódot 1-re
     };
 
-    const isShow = !!mediaData.showid;
+    const isShow = !!mediaData?.showid;
 
     // Itt lenne a checkSession és onLogout, ha szükséges
 
@@ -86,70 +125,89 @@ export default function Detail() {
         return <div className="vh-100 d-flex justify-content-center align-items-center bg-dark"><div className="spinner-border text-light"></div></div>;
     }
 
-    const playButtonUrl = `/play/${slug}`
+    const playButtonUrl = `/play/${slug}`;
     const playButtonState = {
-        id: mediaData.movieid,
+        id: isShow ? mediaData.showid : mediaData.movieid,
         cover: mediaData.cover,
-        is_show: false
+        is_show: isShow
     };
     // console.log(mediaData);
+    // console.log(playButtonState);
+    // console.log(isShow);
 
-    const seasons = episodesData.reduce((acc, episode) => {
-        if (!acc.find(s => s.season_number === episode.season)) {
-            acc.push({
-                season_number: episode.season,
-                episode_count: episodesData.filter(e => e.season === episode.season).length
-            });
-        }
-        return acc;
-    }, []);
+
+    let seasons = [];
+    if (episodesData && episodesData.length > 0) {
+        // Egyedi season számok kinyerése
+        const uniqueSeasons = [...new Set(episodesData.map(ep => ep.season))];
+
+        // Rendezés és formázás
+        seasons = uniqueSeasons
+            .sort((a, b) => a - b) // Növekvő sorrend
+            .map(seasonNum => ({
+                season_number: seasonNum,
+                episode_count: episodesData.filter(e => e.season === seasonNum).length
+            }));
+    }
+
+    // console.log('Available seasons:', seasons);
+
+    // console.log('mediaData:', mediaData);
+    // console.log('isShow:', isShow);
+    // console.log('episodesData:', episodesData);
+    // console.log('episodesData:', episodesData);
 
     return (
-        <div className="detail-page-wrapper">
-            <div className="detail-overlay">
-                <Header user={user} onLogOut={() => { }} />
+    <div className="detail-page-wrapper">
+        <div className="detail-overlay">
+            <Header user={user} onLogOut={onLogout} onAdminPage={false} />
 
-                <div className="container text-black mt-5">
-                    <div className="row align-items-center">
-                        <div className="col-md-4 d-none d-md-block">
-                            <img src={`${BASE_URL}/uploads/covers/${mediaData.cover}`} alt={mediaData.title} className="img-fluid rounded shadow-lg" />
-                        </div>
-                        <div className="col-md-8">
-                            <h1 className="display-4 fw-bold">{mediaData.title.replace(/_/g, ' ')}</h1>
-                            <p className="lead">{mediaData.description}</p>
-                            {!isShow && (
-                                <div className="play-button-wrapper">
-                                    <Link to={"finalUrl"} state={"linkState"} className="text-decoration-none">
-                                        <CustomPlayBtn size='small' />
-                                    </Link>
-                                </div>
-                            )
-                            }
-                        </div>
+            <div className="container text-black mt-5">
+                <div className="row">
+                    <div className="col-md-4 d-none d-md-block">
+                        <img src={`${BASE_URL}/uploads/covers/${mediaData.cover}`} alt={mediaData.title} className="img-fluid rounded shadow-lg" />
+                    </div>
+                    <div className="col-md-8">
+                        <h1 className="display-4 fw-bold">{mediaData.title.replace(/_/g, ' ')}</h1>
+                        <p className="lead">{mediaData.description}</p>
+                        
+
+                        {!isShow && (
+                            <Link to={playButtonUrl} state={playButtonState} className="text-decoration-none">
+                                <CustomPlayBtn size="large" />
+                            </Link>
+                        )}
+
                         {isShow && (
-                            <div className="container my-5">
-                                <div className="row">
-                                    <div className="col-md-4">
-                                        <label className="form-label text-dark">Évad</label>
-                                        <select className="form-select text-dark" value={selectedSeason} onChange={handleSeasonChange}>
-                                            {seasons.map(s => <option key={s.season_number} value={s.season_number}>Season {s.season_number}</option>)}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="mt-4">
-                                    <Slider
-                                        title={`Episodes in Season ${selectedSeason}`}
-                                        slides={filteredEpisodes}
-                                        isLoading={isLoading}
-                                        isEpisodeSlider={true}
-                                    />
-                                </div>
+                            <div className="mt-3" style={{ maxWidth: '250px' }}>
+                                <label className="form-label text-dark">Season</label>
+                                <select className="form-select text-dark" value={selectedSeason} onChange={handleSeasonChange}>
+                                    {seasons.map(s => <option key={s.season_number} value={s.season_number}>Season {s.season_number}</option>)}
+                                </select>
                             </div>
                         )}
                     </div>
                 </div>
+
+                {isShow && (
+                    <div className="mt-3">
+                        <Slider
+                            title={`Episodes in Season ${selectedSeason}`}
+                            slides={filteredEpisodes}
+                            isLoading={isLoading}
+                            isEpisodeSlider={true}
+                        />
+                    </div>
+                )}
+
+                <div className="mt-3">
+                    <Slider title={"Others have watched this"} slides={otherProjects} isLoading={isLoading} isEpisodeSlider={false} />
+                </div>
+                
+
             </div>
             <ToastContainer position="bottom-right" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
         </div>
-    );
+    </div>
+);
 }
