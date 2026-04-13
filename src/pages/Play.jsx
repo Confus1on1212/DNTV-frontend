@@ -19,9 +19,9 @@ export default function Play() {
     const mediaId = location.state?.id;
     const isShow = location.state?.is_show;
     const cover = location.state?.cover;
-    const secondsWatched = new URLSearchParams(location.search).get('t') || 0;
-    const episode = new URLSearchParams(location.search).get('episode');
-    const season = new URLSearchParams(location.search).get('season');
+    const secondsWatched = parseInt(new URLSearchParams(location.search).get('t')) || 0;
+    const episode = parseInt(new URLSearchParams(location.search).get('episode'));
+    const season = parseInt(new URLSearchParams(location.search).get('season'));
 
     useEffect(() => {
         if (!mediaId) {
@@ -35,9 +35,9 @@ export default function Play() {
             try {
                 let media;
                 let finalVideoUrl = '';
-                console.log(mediaId);
-                console.log(season);
-                console.log(episode);
+
+                console.log('mediaId:', mediaId, 'season:', season, 'episode:', episode);
+
                 if (isShow && episode && season) {
                     media = await getEpisode(mediaId, episode, season);
 
@@ -63,6 +63,28 @@ export default function Play() {
         fetchVideoFile();
     }, [mediaId, episode, isShow, navigate, season]);
 
+    const handleVideoLoaded = (e) => {
+        e.target.currentTime = secondsWatched;
+        
+        // Fullscreen
+        const videoElement = e.target;
+        if (videoElement.requestFullscreen) {
+            videoElement.requestFullscreen();
+        } else if (videoElement.webkitRequestFullscreen) { // Safari
+            videoElement.webkitRequestFullscreen();
+        } else if (videoElement.msRequestFullscreen) { // IE11
+            videoElement.msRequestFullscreen();
+        }
+    };
+
+    const handleBack = () => {
+        // 
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        }
+        navigate(-1);
+    };
+
     if (isLoading) {
         return (
             <div className="vh-100 d-flex justify-content-center align-items-center bg-dark">
@@ -73,6 +95,26 @@ export default function Play() {
 
     return (
         <div className="bg-dark min-vh-100">
+
+             <button
+                    onClick={handleBack}
+                    className="btn btn-dark position-absolute top-0 start-0 m-3 d-flex align-items-center gap-2"
+                    style={{
+                        zIndex: 1000,
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+                    }}
+                >
+                    <span className="text-light fw-bold">&laquo; Back</span>
+                </button>
+            
             <div className="container-fluid p-0">
                 {videoUrl ? (
                     <video
