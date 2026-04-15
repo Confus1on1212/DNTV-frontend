@@ -6,7 +6,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import AdminHeader from "../components/AdminHeader.jsx";
 import { whoami, logout } from "../api/user.js";
 import { getAllUsers } from '../api/admin.js'
-import {  getAllMovies, getAllShows } from '../api/videos.js'
+import { getAllMovies, getAllShows } from '../api/videos.js'
+
+import Btn from '../components/Btn.jsx'
+
+
+
+
 
 export default function Admin() {
     const navigate = useNavigate();
@@ -17,6 +23,52 @@ export default function Admin() {
     const [shows, setShows] = useState([])
 
     const isAdmin = user?.role === 1
+
+    const [dirtyRows, setDirtyRows] = useState({});
+
+
+
+    const handleChange = (index, field, value) => {
+        const updatedUsers = [...allUsers];
+        const user = updatedUsers[index];
+
+        user[field] = value;
+
+        setAllUsers(updatedUsers);
+
+        setDirtyRows(prev => ({
+            ...prev,
+            [user.user_id]: true
+        }));
+    };
+    const handleSave = async () => {
+        const changedUsers = allUsers.filter(
+            user => dirtyRows[user.user_id]
+        );
+
+        try {
+            await fetch("/admin/bulk-update-users", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(changedUsers)
+            });
+
+            setDirtyRows({});
+
+            const data = await getAllUsers();
+
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                setAllUsers(data);
+                toast.success("Sikeres mentés!");
+            }
+
+        } catch (err) {
+            toast.error("Hiba mentés közben");
+        }
+    };
+
 
 
     useEffect(() => {
@@ -48,7 +100,7 @@ export default function Admin() {
             try {
                 const data = await getAllUsers()
                 // console.log(data);
-                if(data.error) {
+                if (data.error) {
                     toast.error('Hiba', data.error)
                 } else {
                     setAllUsers(data)
@@ -61,7 +113,7 @@ export default function Admin() {
         async function getMovies() {
             try {
                 const data = await getAllMovies()
-                if(data.error) {
+                if (data.error) {
                     toast.error('Hiba', data.error)
                 } else {
                     setMovies(data)
@@ -74,7 +126,7 @@ export default function Admin() {
         async function getShows() {
             try {
                 const data = await getAllShows()
-                if(data.error) {
+                if (data.error) {
                     toast.error('Hiba', data.error)
                 } else {
                     setShows(data)
@@ -118,11 +170,11 @@ export default function Admin() {
 
     return (
         <div className="min-vh-100 scenic-background">
-            <AdminHeader user={user} onLogOut={onLogout}/>
+            <AdminHeader user={user} onLogOut={onLogout} />
 
-            {isAdmin && 
+            {isAdmin &&
                 <div className="container m-5 blurry-light rounded mx-auto">
-                    <div className="mx-auto users">
+                    <div className="mx-auto users table-responsive" style={{ maxHeight: "400px", overflowY: "auto" }}>
                         <h1>Users</h1>
                         <table className="table table-striped table-secondary table-hover table-responsive">
                             <thead>
@@ -134,19 +186,60 @@ export default function Admin() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {allUsers.map((user) => (
+                                {allUsers.map((user, index) => (
                                     <tr key={user.user_id}>
                                         <td>{user.user_id}</td>
-                                        <td>{user.username}</td>
-                                        <td>{user.email}</td>
-                                        <td>{user.role === 1 ? 'Admin' : 'User'}</td>
+
+                                        <td>
+                                            <input
+                                                type="text"
+                                                value={user.username}
+                                                onChange={(e) => {
+                                                    handleChange(index, "username", e.target.value);
+                                                    e.target.style.backgroundColor = "orange";
+                                                }}
+                                            />
+                                        </td>
+
+                                        <td>
+                                            <input
+                                                type="text"
+                                                value={user.email}
+                                                onChange={(e) => {
+                                                    handleChange(index, "email", e.target.value);
+                                                    e.target.style.backgroundColor = "orange";
+                                                }}
+                                            />
+                                        </td>
+
+                                        <td>
+                                            <select
+                                                value={user.role}
+                                                onChange={(e) => {
+                                                    handleChange(index, "role", Number(e.target.value));
+                                                    e.target.style.backgroundColor = "orange";
+                                                }}
+                                            >
+                                                <option value={0}>User</option>
+                                                <option value={1}>Admin</option>
+                                            </select>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                         <hr />
                     </div>
-
+                    <div
+                        style={{
+                            position: "sticky",
+                            bottom: 0,
+                            background: "rgba(0,0,0,0.3)",
+                            padding: "10px",
+                            backdropFilter: "blur(5px)"
+                        }}>
+                        <Btn btnClass={"btn btn-custom-green w-100"} content={"Commit changes"} onClick={handleSave} />
+                    </div>
                     <div className="mx-auto movies">
 
                     </div>
@@ -157,8 +250,8 @@ export default function Admin() {
                 </div>
             }
 
-            
-            
+
+
             <ToastContainer position="top-center" autoClose={2000} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
         </div>
     );

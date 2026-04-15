@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { getMovie, getEpisode } from "../api/videos.js";
 
-const BASE_URL = "http://2.tcp.eu.ngrok.io:11408";
+const BASE_URL = "http://192.168.9.105:4000";
 
 export default function Play() {
     const [videoUrl, setVideoUrl] = useState('');
