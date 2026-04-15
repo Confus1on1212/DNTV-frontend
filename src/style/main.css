@@ -1,27 +1,264 @@
-.asddd { 
-    background-image: url(../assets/asd.jpg);
-    background-repeat: no-repeat;
-    background-size: 100%;
+html {
+  min-width: 300;
 }
-/* TESZT HATTERKEP */
+
+body {
+  background-color: #ebe9d2 !important;
+}
+
+.btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.scenic-background {
+  background-image: url(../assets/asd.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
 
 .blurry-light {
-    background-color: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(5px);
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .blurry-dark {
-    background-color: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.container-fluid {
-    padding: 0;
+/* MOBIL MERETRE */
+.carousel-wrapper {
+  width: 100%;
+  background-color: #222;
+  height: 350px; 
 }
-.hover { 
-    transition: all .2s ease-in-out;
+
+.overlay {
+  background-color: rgba(0, 0, 0, 0.4);
+  height: 100%;
+  width: 100%;
+  color: white;
+  display: flex; 
+  justify-content: flex-start;
+  align-items: flex-end; 
+  padding: 2rem; 
+}
+
+.overlay h1 {
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+  font-weight: bold;
+}
+
+.carousel-text-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.carousel-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+.carousel-description {
+  font-size: 0.9rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* KOZEPES MERET */
+@media (min-width: 768px) {
+  .carousel-wrapper {
+    height: 500px;
+  }
+  .overlay {
+    padding: 4rem;
+  }
+  .carousel-title {
+    font-size: 3.5rem;
+  }
+  .carousel-description {
+    font-size: 1.1rem;
+    width: 70%; 
+    -webkit-line-clamp: 4;
+  }
+}
+
+/* NAGY MERET */
+@media (min-width: 992px) {
+  .carousel-wrapper {
+    height: 600px;
+  }
+  .overlay {
+    padding: 5rem;
+  }
+  .carousel-title {
+    font-size: 4.5rem;
+  }
+  .carousel-description {
+    font-size: 1.25rem;
+    width: 50%;
+  }
+}
+
+.ant-carousel, 
+.ant-carousel .slick-slider, 
+.ant-carousel .slick-list, 
+.ant-carousel .slick-track, 
+.ant-carousel .slick-slide > div {
+  height: 100%;
+}
+
+.carousel-card-content {
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.ant-carousel .slick-dots li button {
+  background: white !important;
+  opacity: 0.5;
+  height: 6px !important;
+  border-radius: 4px;
+}
+
+.ant-carousel .slick-dots li.slick-active button {
+  opacity: 1;
+  width: 30px !important;
+}
+
+.hover {
+  transition: all 0.2s ease-in-out;
 }
 
 .hover:hover {
-    transform: scale(150%);
+  transform: scale(110%);
+}
+
+.text-custom-yellow {
+  color: var(--custom-yellow) !important;
+}
+
+.category-slider {
+  padding: 30px 0;
+}
+
+.category-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  padding-left: 4%;
+}
+.swiper {
+  padding: 0 4%;
+}
+
+.movie-card-link {
+  text-decoration: none;
+  display: block;
+}
+
+.movie-card {
+  aspect-ratio: 16 / 9;
+  background-size: cover;
+  background-position: center;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movie-card-title {
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin: 0;
+  /* text-wrap: wrap; */
+  text-overflow: ellipsis;
+}
+
+.movie-card:hover {
+  transform: scale(1.08);
+  z-index: 10;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.movie-card-overlay {
+  width: 100%;
+  height: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 60%);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.play-button-wrapper {
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.movie-card:hover .play-button-wrapper {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.trending-tag {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+summary {
+    list-style: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+summary:hover {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    padding-left: 1.8rem !important; /* Egy kis mozgás hoverre */
+}
+
+/* Amikor nyitva van a részlet */
+details[open] summary {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+details[open] summary span {
+    transform: rotate(180deg);
+}
+
+.help-accordion details {
+    border-radius: 8px;
+    overflow: hidden;
 }
