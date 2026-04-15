@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getAllMovies, getAllShows, getShowEpisodes, getRandomProjects } from "../api/videos.js";
 import { whoami, logout } from "../api/user.js";
 
-const BASE_URL = "http://2.tcp.eu.ngrok.io:11408";
+const BASE_URL = "http://192.168.9.105:4000";
 
 function generateSlug(title) {
     return title.toLowerCase().replace(/ /g, '-').replace(/_/g, '-').replace(/[^\w-]+/g, '');
