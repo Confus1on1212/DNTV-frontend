@@ -12,6 +12,7 @@ import Terms from './pages/Terms.jsx';
 import Feedback from './pages/Feedback.jsx';
 import Help from './pages/Help.jsx';
 import Detail from './pages/Detail.jsx';
+import Upload from './pages/Upload.jsx';
 
 import './style/font.css'
 import './style/main.css'
@@ -32,6 +33,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='/feedback' element={<Feedback/>}/>
         <Route path='/help' element={<Help/>}/>
         <Route path='/details/:slug' element={<Detail/>}/>
+        <Route path='/upload' element={<Upload/>}/>
       </Routes>
     </BrowserRouter>
   </StrictMode>,
