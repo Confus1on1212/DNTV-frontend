@@ -10,10 +10,6 @@ import { getAllMovies, getAllShows } from '../api/videos.js'
 
 import Btn from '../components/Btn.jsx'
 
-
-
-
-
 export default function Admin() {
     const navigate = useNavigate();
 
@@ -22,29 +18,26 @@ export default function Admin() {
     const [movies, setMovies] = useState([])
     const [shows, setShows] = useState([])
 
-    const isAdmin = user?.role === 1
-
+    const isAdmin = user?.role === 1;
     const [dirtyRows, setDirtyRows] = useState({});
-
-
 
     const handleChange = (index, field, value) => {
         const updatedUsers = [...allUsers];
         const user = updatedUsers[index];
-
         user[field] = value;
-
         setAllUsers(updatedUsers);
-
         setDirtyRows(prev => ({
             ...prev,
             [user.user_id]: true
         }));
     };
+
     const handleSave = async () => {
-        const changedUsers = allUsers.filter(
-            user => dirtyRows[user.user_id]
-        );
+        const changedUsers = allUsers.filter(user => dirtyRows[user.user_id]);
+        if (changedUsers.length === 0) {
+            toast.info("No changes to save.");
+            return;
+        }
 
         try {
             await fetch("/admin/bulk-update-users", {
@@ -54,22 +47,18 @@ export default function Admin() {
             });
 
             setDirtyRows({});
-
             const data = await getAllUsers();
 
             if (data.error) {
                 toast.error(data.error);
             } else {
                 setAllUsers(data);
-                toast.success("Sikeres mentés!");
+                toast.success("Users updated successfully!");
             }
-
         } catch (err) {
-            toast.error("Hiba mentés közben");
+            toast.error("Error saving changes.");
         }
     };
-
-
 
     useEffect(() => {
         async function checkSession() {
@@ -77,82 +66,60 @@ export default function Admin() {
                 const data = await whoami();
                 if (data && !data.error) {
                     setUser(data);
-
                     if (data.role !== 1) {
-                        toast.error("Nincs jogosultságod az oldal megtekintéséhez!", {
+                        toast.error("You do not have permission to view this page.", {
                             onClose: () => navigate('/')
-                        })
+                        });
                     }
                 } else {
-                    toast.error("Nem vagy bejelentkezve!", {
+                    toast.error("You are not logged in.", {
                         onClose: () => navigate('/')
-                    })
+                    });
                 }
             } catch (err) {
                 console.error("Auth check failed", err);
-                toast.error("Hiba történt az azonosítás során.", {
+                toast.error("An error occurred during authentication.", {
                     onClose: () => navigate('/')
-                })
+                });
             }
         }
 
-        async function getUsers() {
+        async function fetchData() {
             try {
-                const data = await getAllUsers()
-                // console.log(data);
-                if (data.error) {
-                    toast.error('Hiba', data.error)
-                } else {
-                    setAllUsers(data)
-                }
+                const [usersData, moviesData, showsData] = await Promise.all([
+                    getAllUsers(),
+                    getAllMovies(),
+                    getAllShows()
+                ]);
+
+                setAllUsers(usersData.error ? [] : usersData);
+                setMovies(moviesData.error ? [] : moviesData);
+                setShows(showsData.error ? [] : showsData);
+
+                if (usersData.error) toast.error(usersData.error);
+                if (moviesData.error) toast.error(moviesData.error);
+                if (showsData.error) toast.error(showsData.error);
+
             } catch (err) {
-                toast.error('Hiba a felhasználók lekérdezése során')
+                toast.error('Failed to fetch page data.');
             }
         }
 
-        async function getMovies() {
-            try {
-                const data = await getAllMovies()
-                if (data.error) {
-                    toast.error('Hiba', data.error)
-                } else {
-                    setMovies(data)
-                }
-            } catch (err) {
-                toast.error('Hiba a filmek lekérdezése során')
+        checkSession().then(() => {
+            if (user?.role === 1 || (user === null && window.location.pathname.includes('admin'))) {
+                 fetchData();
             }
-        }
-
-        async function getShows() {
-            try {
-                const data = await getAllShows()
-                if (data.error) {
-                    toast.error('Hiba', data.error)
-                } else {
-                    setShows(data)
-                }
-            } catch (err) {
-                toast.error('Hiba a sorozatok lekérdezése során')
-            }
-        }
-
-        checkSession();
-        getUsers();
-        getMovies()
-        getShows()
-        console.log(allUsers);
-        console.log(movies);
-        console.log(shows);
-    }, [navigate]);
+        });
+    }, [navigate, user?.role]);
 
     async function onLogout() {
         try {
             await logout();
-            toast.success("Sikeresen kijelentkeztél!");
+            toast.success("Successfully logged out!");
             setUser(null);
             navigate('/');
         } catch (error) {
-            toast.error("Hiba a kijelentkezés során.");
+            toast.error("Error during logout.");
         }
     }
 
@@ -167,92 +134,88 @@ export default function Admin() {
         );
     }
 
-
     return (
-        <div className="min-vh-100 scenic-background">
+        <div className="min-vh-100">
             <AdminHeader user={user} onLogOut={onLogout} />
 
-            {isAdmin &&
-                <div className="container m-5 blurry-light rounded mx-auto">
-                    <div className="mx-auto users table-responsive" style={{ maxHeight: "400px", overflowY: "auto" }}>
-                        <h1>Users</h1>
-                        <table className="table table-striped table-secondary table-hover table-responsive">
-                            <thead>
-                                <tr>
-                                    <th>user_id</th>
-                                    <th>username</th>
-                                    <th>email</th>
-                                    <th>role</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {allUsers.map((user, index) => (
-                                    <tr key={user.user_id}>
-                                        <td>{user.user_id}</td>
+            {isAdmin && (
+                <div className="container py-5">
+                    <div className="row justify-content-center">
+                        <div className="col-lg-10">
+                            <div className="p-4 p-md-5 blurry-light rounded shadow-lg text-white">
+                                <h1 className="text-custom-yellow fw-bold text-uppercase text-center mb-4">Admin Dashboard</h1>
 
-                                        <td>
-                                            <input
-                                                type="text"
-                                                value={user.username}
-                                                onChange={(e) => {
-                                                    handleChange(index, "username", e.target.value);
-                                                    e.target.style.backgroundColor = "orange";
-                                                }}
-                                            />
-                                        </td>
+                                <h2 className="text-custom-yellow fw-bold small text-uppercase mt-4 mb-3">User Management</h2>
+                                <div className="table-responsive">
+                                    <table className="table table-light table-hover align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Username</th>
+                                                <th>Email</th>
+                                                <th>Role</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {allUsers.map((u, index) => (
+                                                <tr key={u.user_id} style={dirtyRows[u.user_id] ? { borderLeft: '3px solid orange' } : {}}>
+                                                    <td>{u.user_id}</td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={u.username}
+                                                            onChange={(e) => handleChange(index, "username", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={u.email}
+                                                            onChange={(e) => handleChange(index, "email", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <select
+                                                            className="form-select bg-transparent border-secondary"
+                                                            value={u.role}
+                                                            onChange={(e) => handleChange(index, "role", Number(e.target.value))}
+                                                        >
+                                                            <option value={0}>User</option>
+                                                            <option value={1}>Admin</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="d-grid mt-4">
+                                     <Btn btnClass={"btn btn-custom-yellow py-2 fw-bold"} content={"SAVE USER CHANGES"} onClick={handleSave} disabled={Object.keys(dirtyRows).length === 0} />
+                                </div>
 
-                                        <td>
-                                            <input
-                                                type="text"
-                                                value={user.email}
-                                                onChange={(e) => {
-                                                    handleChange(index, "email", e.target.value);
-                                                    e.target.style.backgroundColor = "orange";
-                                                }}
-                                            />
-                                        </td>
-
-                                        <td>
-                                            <select
-                                                value={user.role}
-                                                onChange={(e) => {
-                                                    handleChange(index, "role", Number(e.target.value));
-                                                    e.target.style.backgroundColor = "orange";
-                                                }}
-                                            >
-                                                <option value={0}>User</option>
-                                                <option value={1}>Admin</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <hr />
-                    </div>
-                    <div
-                        style={{
-                            position: "sticky",
-                            bottom: 0,
-                            background: "rgba(0,0,0,0.3)",
-                            padding: "10px",
-                            backdropFilter: "blur(5px)"
-                        }}>
-                        <Btn btnClass={"btn btn-custom-green w-100"} content={"Commit changes"} onClick={handleSave} />
-                    </div>
-                    <div className="mx-auto movies">
-
-                    </div>
-
-                    <div className="mx-auto shows">
-
+                                <h2 className="text-custom-yellow fw-bold small text-uppercase mt-5 mb-3">Content Overview</h2>
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <div className="p-3 rounded text-custom-yellow blurry-light">
+                                            <h4>Movies</h4>
+                                            <p className="fs-1 fw-bold mb-0">{movies.length}</p>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 mt-3 mt-md-0">
+                                         <div className="p-3 rounded text-custom-yellow blurry-light">
+                                            <h4>Shows</h4>
+                                            <p className="fs-1 fw-bold mb-0">{shows.length}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            }
-
-
-
-            <ToastContainer position="top-center" autoClose={2000} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
+            )}
+            <ToastContainer position="bottom-right" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
         </div>
     );
 }

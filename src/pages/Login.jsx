@@ -16,7 +16,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   async function onLogin(event) {
-    event.preventDefault(); 
+    event.preventDefault();
 
     if (!email || !psw) {
       return toast.error("Kérlek, tölts ki minden mezőt!");
@@ -38,37 +38,37 @@ export default function Login() {
   }
 
   return (
-    <div className="container-fluid text-bg-dark vh-100 scenic-background">
+    <div className="vh-100">
       <Header />
 
       <div className="container pt-5">
         <div className="row justify-content-center">
           <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-4">
-            <div className="blurry-light rounded p-4 p-md-5">
-              
-              <h1 className="text-center text-custom-yellow mb-4">Log In</h1>
-              
-              <form onSubmit={onLogin}>
-                <InputField value={email} type="email" placeholder="Email" isHelperEnabled={true} helperText="We won't share your email" setValue={setEmail} showPassword={Text}/>
-                <InputField value={psw} type="password" placeholder="Password" isHelperEnabled={false} showPassword={showPassword} setValue={setPassword} />
-                
-                <div className="mb-3 form-check text-custom-blue">
-                  <input type="checkbox" className="form-check-input" id="showPasswordCheck" checked={showPassword} onChange={() => setShowPassword(!showPassword)} />
-                  <label className="form-check-label" htmlFor="showPasswordCheck"> Show Password</label>
-                </div>
+              <div className="blurry-light rounded p-3 p-md-4 shadow-lg">
 
-                <div className="text-center mb-3">
-                  <Link className="text-custom-blue text-decoration-none" to={"/signup"}>I don't have an account yet</Link>
-                </div>
-                
-                <Btn btnClass={"btn btn-custom-yellow w-100"} content={"Log In"} type="submit" />
-              </form>
+                <h1 className="text-center text-custom-yellow mb-4">Log In</h1>
 
-            </div>
+                <form onSubmit={onLogin}>
+                  <InputField value={email} type="email" placeholder="Email" isHelperEnabled={true} setValue={setEmail} showPassword={Text} />
+                  <InputField value={psw} type="password" placeholder="Password" isHelperEnabled={false} showPassword={showPassword} setValue={setPassword} />
+
+                  <div className="mb-3 form-check text-custom-blue">
+                    <input type="checkbox" className="form-check-input" id="showPasswordCheck" checked={showPassword} onChange={() => setShowPassword(!showPassword)} />
+                    <label className="form-check-label" htmlFor="showPasswordCheck"> Show Password</label>
+                  </div>
+
+                  <div className="text-center mb-3">
+                    <Link className="text-custom-blue text-decoration-none" to={"/signup"}>I don't have an account yet</Link>
+                  </div>
+
+                  <Btn btnClass={"btn btn-custom-yellow w-100"} content={"Log In"} type="submit" />
+                </form>
+
+              </div>
           </div>
         </div>
       </div>
-      
+
       <ToastContainer position="top-center" autoClose={1000} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
     </div>
   );

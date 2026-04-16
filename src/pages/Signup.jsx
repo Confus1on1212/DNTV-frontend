@@ -47,7 +47,7 @@ export default function Signup() {
     }
 
     return (
-        <div className="container-fluid text-bg-dark vh-100 scenic-background">
+        <div className="vh-100">
             <Header />
 
             <div className="container pt-3">
