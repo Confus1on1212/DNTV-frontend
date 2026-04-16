@@ -80,7 +80,7 @@ export default function Feedback() {
                         <p className='text-custom-blue mt-3'>Please look trough our <Link className='text-decoration-none text-custom-red' to={"/help"}>FAQs</Link> first!</p>
                     </div>
 
-                    <div className="p-4 p-md-5 blurry-dark rounded shadow-lg">
+                    <div className="p-4 p-md-5 blurry-light rounded shadow-lg">
                         <form onSubmit={handleSubmit}>
                             <div className="mb-3">
                                 <label className="form-label text-custom-yellow fw-bold small text-uppercase">Subject</label>

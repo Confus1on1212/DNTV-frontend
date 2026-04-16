@@ -13,13 +13,13 @@ export default function Header({user, onLogOut}) {
                 <Link to={"/"} className="navbar-brand user-select-none text-decoration-none text-custom-yellow text-uppercase fw-bolder hover ms-3">DNTV</Link>
 
                 
-                    {isLoggedIn && (
+                    {/* {isLoggedIn && (
                         <div className="navbar-nav nav-underline flex-row align-items-center overflow-x-auto">
                             <NavLink className="nav-link text-custom-yellow user-select-none active" to="/">Home</NavLink>
                             <NavLink className="nav-link text-custom-blue user-select-none" to="/movies">Movies</NavLink>
                             <NavLink className="nav-link text-custom-blue user-select-none" to="/shows">Shows</NavLink>
                         </div>
-                    )}
+                    )} */}
 
                 {!isLoggedIn &&
                     <div className="d-flex">

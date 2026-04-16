@@ -5,71 +5,70 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import AdminHeader from "../components/AdminHeader.jsx";
 import { whoami, logout } from "../api/user.js";
-import { getAllUsers } from '../api/admin.js'
-import { getAllMovies, getAllShows } from '../api/videos.js'
-
 import Btn from '../components/Btn.jsx'
-
-
-
-
 
 export default function Upload() {
     const navigate = useNavigate();
 
     const [user, setUser] = useState(null);
-    const [allUsers, setAllUsers] = useState([])
-    const [movies, setMovies] = useState([])
-    const [shows, setShows] = useState([])
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [uploadType, setUploadType] = useState('movie');
 
-    const isAdmin = user?.role === 1
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        studio: '',
+        imdb_rating: '',
+        pg_rating: '',
+        quality: '',
+        cover_file: null, 
+        video_file: null
+    });
 
-    const [dirtyRows, setDirtyRows] = useState({});
+    const isAdmin = user?.role === 1;
 
-
-
-    const handleChange = (index, field, value) => {
-        const updatedUsers = [...allUsers];
-        const user = updatedUsers[index];
-
-        user[field] = value;
-
-        setAllUsers(updatedUsers);
-
-        setDirtyRows(prev => ({
-            ...prev,
-            [user.user_id]: true
-        }));
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
-    const handleSave = async () => {
-        const changedUsers = allUsers.filter(
-            user => dirtyRows[user.user_id]
-        );
 
-        try {
-            await fetch("/admin/bulk-update-users", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(changedUsers)
-            });
-
-            setDirtyRows({});
-
-            const data = await getAllUsers();
-
-            if (data.error) {
-                toast.error(data.error);
-            } else {
-                setAllUsers(data);
-                toast.success("Sikeres mentés!");
-            }
-
-        } catch (err) {
-            toast.error("Hiba mentés közben");
+    const handleFileChange = (e) => {
+        const { name, files } = e.target;
+        if (files.length > 0) {
+            setFormData(prev => ({ ...prev, [name]: files[0] }));
         }
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        
+        const dataToSend = new FormData();
+        dataToSend.append('type', uploadType);
 
+        Object.entries(formData).forEach(([key, value]) => {
+            if (key !== 'cover_file' && key !== 'video_file' && value) {
+                dataToSend.append(key, value);
+            }
+        });
+        
+        // Append file fields if they exist
+        if (formData.cover_file) {
+            dataToSend.append('cover_file', formData.cover_file);
+        }
+        if (formData.video_file) {
+            dataToSend.append('video_file', formData.video_file);
+        }
+
+        console.log("Uploading content via FormData...");
+        // Log FormData entries for debugging
+        for (let [key, value] of dataToSend.entries()) {
+            console.log(`${key}:`, value);
+        }
+
+        toast.info("Upload functionality is in development.");
+        setIsSubmitting(false);
+    };
 
     useEffect(() => {
         async function checkSession() {
@@ -77,82 +76,34 @@ export default function Upload() {
                 const data = await whoami();
                 if (data && !data.error) {
                     setUser(data);
-
                     if (data.role !== 1) {
-                        toast.error("Nincs jogosultságod az oldal megtekintéséhez!", {
+                        toast.error("You do not have permission to view this page.", {
                             onClose: () => navigate('/')
-                        })
+                        });
                     }
                 } else {
-                    toast.error("Nem vagy bejelentkezve!", {
+                    toast.error("You are not logged in.", {
                         onClose: () => navigate('/')
-                    })
+                    });
                 }
             } catch (err) {
                 console.error("Auth check failed", err);
-                toast.error("Hiba történt az azonosítás során.", {
+                toast.error("An error occurred during authentication.", {
                     onClose: () => navigate('/')
-                })
+                });
             }
         }
-
-        async function getUsers() {
-            try {
-                const data = await getAllUsers()
-                // console.log(data);
-                if (data.error) {
-                    toast.error('Hiba', data.error)
-                } else {
-                    setAllUsers(data)
-                }
-            } catch (err) {
-                toast.error('Hiba a felhasználók lekérdezése során')
-            }
-        }
-
-        async function getMovies() {
-            try {
-                const data = await getAllMovies()
-                if (data.error) {
-                    toast.error('Hiba', data.error)
-                } else {
-                    setMovies(data)
-                }
-            } catch (err) {
-                toast.error('Hiba a filmek lekérdezése során')
-            }
-        }
-
-        async function getShows() {
-            try {
-                const data = await getAllShows()
-                if (data.error) {
-                    toast.error('Hiba', data.error)
-                } else {
-                    setShows(data)
-                }
-            } catch (err) {
-                toast.error('Hiba a sorozatok lekérdezése során')
-            }
-        }
-
         checkSession();
-        getUsers();
-        getMovies()
-        getShows()
-        console.log(allUsers);
-        console.log(movies);
-        console.log(shows);
     }, [navigate]);
 
     async function onLogout() {
         try {
             await logout();
-            toast.success("Sikeresen kijelentkeztél!");
+            toast.success("Successfully logged out!");
             setUser(null);
             navigate('/');
         } catch (error) {
-            toast.error("Hiba a kijelentkezés során.");
+            toast.error("Error during logout.");
         }
     }
 
@@ -167,144 +118,75 @@ export default function Upload() {
         );
     }
 
-
     return (
-        <div className="min-vh-100 scenic-background">
+        <div className="min-vh-100">
             <AdminHeader user={user} onLogOut={onLogout} />
 
             {isAdmin &&
-                <div className="container m-5 blurry-light rounded mx-auto">
-                    <div className="mx-auto users align-items-center m-1" style={{ maxHeight: "400px", overflowY: "auto" }}>
-                        <h1>Upload</h1>
-                        <div className="d-flex align-items-center m-1">
-                            <h5 className="p-2 mb-0" style={{ minWidth: "120px", width:"30vh" }}>
-                                Choose upload type:
-                            </h5>
-                            <select
-                                className="form-control"
-                                style={{ maxWidth: "200px" }}
-                                value={user.role}
-                                onChange={(e) => {
-                                    handleChange(index, "role", Number(e.target.value));
-                                    e.target.style.backgroundColor = "orange";
-                                }}
-                            >
-                                <option value={0}>Movie</option>
-                                <option value={1}>Show</option>
-                            </select>
-                        </div>
+                <div className="container py-4">
+                    <div className="row justify-content-center">
+                        <div className="col-md-8 col-lg-7">
+                            <div className="p-4 p-md-4 blurry-light rounded shadow-lg">
+                                <h1 className="text-custom-yellow fw-bold text-uppercase text-center mb-4">Upload Content</h1>
+                                <form onSubmit={handleSubmit}>
+                                    <div className="mb-3">
+                                        <label className="form-label text-custom-yellow fw-bold small text-uppercase">Content Type</label>
+                                        <select className="form-select blurry-light border-0 text-dark" value={uploadType} onChange={(e) => setUploadType(e.target.value)}>
+                                            <option value="movie">Movie</option>
+                                            <option value="show">Show</option>
+                                        </select>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label text-custom-yellow fw-bold small text-uppercase">Title</label>
+                                        <input type="text" name="title" className="form-control blurry-light border-0 text-dark" placeholder="e.g., The Matrix" value={formData.title} onChange={handleInputChange} required />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label text-custom-yellow fw-bold small text-uppercase">Description</label>
+                                        <textarea name="description" className="form-control blurry-light border-0 text-dark" rows="4" placeholder="A brief summary of the content..." value={formData.description} onChange={handleInputChange} required></textarea>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-6 mb-3">
+                                            <label className="form-label text-custom-yellow fw-bold small text-uppercase">Studio</label>
+                                            <input type="text" name="studio" className="form-control blurry-light border-0 text-dark" placeholder="e.g., Warner Bros." value={formData.studio} onChange={handleInputChange} />
+                                        </div>
+                                        <div className="col-md-6 mb-3">
+                                            <label className="form-label text-custom-yellow fw-bold small text-uppercase">IMDb Rating</label>
+                                            <input type="text" name="imdb_rating" className="form-control blurry-light border-0 text-dark" placeholder="e.g., 8.7" value={formData.imdb_rating} onChange={handleInputChange} />
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-6 mb-3">
+                                            <label className="form-label text-custom-yellow fw-bold small text-uppercase">PG Rating</label>
+                                            <input type="text" name="pg_rating" className="form-control blurry-light border-0 text-dark" placeholder="e.g., PG-13" value={formData.pg_rating} onChange={handleInputChange} />
+                                        </div>
+                                        <div className="col-md-6 mb-3">
+                                            <label className="form-label text-custom-yellow fw-bold small text-uppercase">Quality</label>
+                                            <input type="text" name="quality" className="form-control blurry-light border-0 text-dark" placeholder="e.g., 1080p" value={formData.quality} onChange={handleInputChange} />
+                                        </div>
+                                    </div>
+                                    
+                                    {/* --- Corrected File Inputs --- */}
+                                    <div className="row">
+                                        <div className="col-md-6 mb-3">
+                                            <label className="form-label text-custom-yellow fw-bold small text-uppercase">COVER IMAGE</label>
+                                            <input type="file" name="cover_file" className="form-control blurry-light border-0 text-dark" onChange={handleFileChange} accept="image/*" />
+                                        </div>
+                                        <div className="col-md-6 mb-3">
+                                            <label className="form-label text-custom-yellow fw-bold small text-uppercase">VIDEO FILE</label>
+                                            <input type="file" name="video_file" className="form-control blurry-light border-0 text-dark" onChange={handleFileChange} accept="video/mp4,video/x-m4v,video/*" />
+                                        </div>
+                                    </div>
 
-                        <div className="d-flex align-items-center m-1">
-                            <h5 className="p-2 mb-0" style={{ minWidth: "120px", width:"30vh" }}>
-                                Title:
-                            </h5>
-                            <input
-                                type="text"
-                                className="form-control"
-                                style={{ maxWidth: "200px" }}
-                                onChange={(e) => {
-                                    handleChange(index, "email", e.target.value);
-                                    e.target.style.backgroundColor = "orange";
-                                }}
-                            />
+                                    <div className="d-grid mt-4">
+                                        <Btn btnClass={'btn btn-custom-yellow py-2 fw-bold'} content={'UPLOAD CONTENT'} type="submit" disabled={isSubmitting} />
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <div className="d-flex align-items-center m-1">
-                            <h5 className="p-2 mb-0" style={{ minWidth: "120px", width:"30vh" }}>
-                                Description : 
-                            </h5>
-                            <input
-                                type="text"
-                                className="form-control"
-                                style={{ maxWidth: "200px" }}
-                                onChange={(e) => {
-                                    handleChange(index, "email", e.target.value);
-                                    e.target.style.backgroundColor = "orange";
-                                }}
-                            />
-                        </div>
-                        <div className="d-flex align-items-center m-1">
-                            <h5 className="p-2 mb-0" style={{ minWidth: "120px", width:"30vh" }}>
-                                Studio :
-                            </h5>
-                            <input
-                                type="text"
-                                className="form-control"
-                                style={{ maxWidth: "200px" }}
-                                onChange={(e) => {
-                                    handleChange(index, "email", e.target.value);
-                                    e.target.style.backgroundColor = "orange";
-                                }}
-                            />
-                        </div>
-                        <div className="d-flex align-items-center m-1">
-                            <h5 className="p-2 mb-0" style={{ minWidth: "120px", width:"30vh" }}>
-                                Imdb rating :
-                            </h5>
-                            <input
-                                type="text"
-                                className="form-control"
-                                style={{ maxWidth: "200px" }}
-                                onChange={(e) => {
-                                    handleChange(index, "email", e.target.value);
-                                    e.target.style.backgroundColor = "orange";
-                                }}
-                            />
-                        </div>
-                        <div className="d-flex align-items-center m-1">
-                            <h5 className="p-2 mb-0" style={{ minWidth: "120px", width:"30vh" }}>
-                                Pg rating :
-                            </h5>
-                            <input
-                                type="text"
-                                className="form-control"
-                                style={{ maxWidth: "200px" }}
-                                onChange={(e) => {
-                                    handleChange(index, "email", e.target.value);
-                                    e.target.style.backgroundColor = "orange";
-                                }}
-                            />
-                        </div>
-                        <div className="d-flex align-items-center m-1">
-                            <h5 className="p-2 mb-0" style={{ minWidth: "120px", width:"30vh" }}>
-                                Quality :
-                            </h5>
-                            <input
-                                type="text"
-                                className="form-control"
-                                style={{ maxWidth: "200px" }}
-                                onChange={(e) => {
-                                    handleChange(index, "email", e.target.value);
-                                    e.target.style.backgroundColor = "orange";
-                                }}
-                            />
-                        </div>
-
-                        <p>asd</p>
-                        <hr />
-                    </div>
-                    <div
-                        style={{
-                            position: "sticky",
-                            bottom: 0,
-                            background: "rgba(0,0,0,0.3)",
-                            padding: "10px",
-                            backdropFilter: "blur(5px)"
-                        }}>
-                        <Btn btnClass={"btn btn-custom-green w-100"} content={"Commit changes"} onClick={handleSave} />
-                    </div>
-                    <div className="mx-auto movies">
-
-                    </div>
-
-                    <div className="mx-auto shows">
-
                     </div>
                 </div>
             }
-
-
-
-            <ToastContainer position="top-center" autoClose={2000} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
+            <ToastContainer position="bottom-right" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
         </div>
     );
 }

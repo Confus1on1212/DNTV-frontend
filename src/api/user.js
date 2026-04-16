@@ -66,7 +66,7 @@ export async function sendFeedback(feedbackData) {
     const responseData = await res.json();
     
     if (!res.ok) {
-        // Ha a szerver hibát küld, dobunk egy Error-t, amit a catch blokk el tud kapni
+        console.log(responseData.error);
         throw new Error(responseData.error || 'Hiba a visszajelzés küldésekor.');
     }
     

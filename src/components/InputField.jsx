@@ -4,7 +4,7 @@ export default function InputField({type, placeholder, isHelperEnabled, helperTe
             <input type={showPassword ? {type} : "password"} className="form-control" placeholder={placeholder} value={value}
             onChange={(e) => setValue(e.target.value)}/>
 
-            {isHelperEnabled && <div id="emailHelp" className="form-text text-white-50">{helperText}</div>}
+            {isHelperEnabled && <div id="emailHelp" className="form-text text-custom-blue">{helperText}</div>}
         </div>
     )
 }
