@@ -42,31 +42,90 @@ export default function Upload() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        
-        const dataToSend = new FormData();
-        dataToSend.append('type', uploadType);
-
-        Object.entries(formData).forEach(([key, value]) => {
-            if (key !== 'cover_file' && key !== 'video_file' && value) {
-                dataToSend.append(key, value);
+    
+        try {
+            const dataToSend = new FormData();
+    
+            // COMMON FIELDS (backend expects these exact names)
+            dataToSend.append("title", formData.title);
+            dataToSend.append("desc", formData.description);
+            dataToSend.append("studio", formData.studio);
+            dataToSend.append("imdb", formData.imdb_rating);
+            dataToSend.append("pg", formData.pg_rating);
+            dataToSend.append("quality", formData.quality);
+    
+            // =========================
+            // COVER (BOTH MOVIE + SHOW)
+            // =========================
+            if (formData.cover_file) {
+                dataToSend.append("cover", formData.cover_file);
             }
-        });
-        
-        // Append file fields if they exist
-        if (formData.cover_file) {
-            dataToSend.append('cover_file', formData.cover_file);
+    
+            // =========================
+            // SHOW UPLOAD
+            // =========================
+            if (uploadType === "show") {
+                dataToSend.append("season", 1);
+    
+                console.log("Uploading SHOW...");
+    
+                if (formData.video_file) {
+                    dataToSend.append("episodes", formData.video_file);
+                }
+    
+                const res = await fetch("/videos/postShow", {
+                    method: "POST",
+                    credentials: "include",
+                    body: dataToSend,
+                });
+    
+                const data = await res.json();
+    
+                if (!res.ok) throw new Error(data?.error || "Show upload failed");
+    
+                toast.success("Show uploaded successfully!");
+            }
+    
+            // =========================
+            // MOVIE UPLOAD
+            // =========================
+            else {
+                console.log("Uploading MOVIE...");
+    
+                if (formData.video_file) {
+                    dataToSend.append("movie", formData.video_file);
+                }
+    
+                const res = await fetch("/videos/postMovie", {
+                    method: "POST",
+                    credentials: "include",
+                    body: dataToSend,
+                });
+    
+                const data = await res.json();
+    
+                if (!res.ok) throw new Error(data?.error || "Movie upload failed");
+    
+                toast.success("Movie uploaded successfully!");
+            }
+    
+            // RESET FORM
+            setFormData({
+                title: "",
+                description: "",
+                studio: "",
+                imdb_rating: "",
+                pg_rating: "",
+                quality: "",
+                cover_file: null,
+                video_file: null
+            });
+    
+        } catch (err) {
+            console.error(err);
+            toast.error(err.message || "Upload failed");
         }
-        if (formData.video_file) {
-            dataToSend.append('video_file', formData.video_file);
-        }
-
-        console.log("Uploading content via FormData...");
-        // Log FormData entries for debugging
-        for (let [key, value] of dataToSend.entries()) {
-            console.log(`${key}:`, value);
-        }
-
-        toast.info("Upload functionality is in development.");
+    
         setIsSubmitting(false);
     };
 
