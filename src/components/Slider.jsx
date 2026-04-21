@@ -5,8 +5,6 @@ import CustomPlayBtn from './CustomPlayBtn'; // Feltételezve, hogy itt van a go
 
 import 'swiper/css';
 
-const BASE_URL = "http://192.168.9.105:4000";
-
 // Helper függvény a slug generálásához
 function generateSlug(title) {
   return title.toLowerCase().replace(/ /g, '-').replace(/_/g, '-').replace(/[^\w-]+/g, ''); // space -> -, _ -> -,  
@@ -69,7 +67,7 @@ export default function Slider({ title, slides, isLoading, isEpisodeSlider }) {
           return (
             <SwiperSlide key={uniqueKey}>
               <div className="movie-card-link">
-                <div className="movie-card" style={{ backgroundImage: `url(${BASE_URL}/uploads/covers/${slide.cover})` }}>
+                <div className="movie-card" style={{ backgroundImage: `url(${import.meta.env.VITE_BASE_URL}/uploads/covers/${slide.cover})` }}>
                   <div className="movie-card-overlay">
                     <p className='movie-card-title'>{slide.title.replace(/_/g, ' ')}</p>
                     <div className="play-button-wrapper">

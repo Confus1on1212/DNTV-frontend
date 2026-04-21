@@ -11,8 +11,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getAllMovies, getAllShows, getShowEpisodes, getRandomProjects } from "../api/videos.js";
 import { whoami, logout } from "../api/user.js";
 
-const BASE_URL = "http://192.168.9.105:4000";
-
 function generateSlug(title) {
     return title.toLowerCase().replace(/ /g, '-').replace(/_/g, '-').replace(/[^\w-]+/g, '');
 }
@@ -165,7 +163,7 @@ export default function Detail() {
             <div className="container text-black mt-5">
                 <div className="row">
                     <div className="col-md-4 d-none d-md-block">
-                        <img src={`${BASE_URL}/uploads/covers/${mediaData.cover}`} alt={mediaData.title} className="img-fluid rounded shadow-lg" />
+                        <img src={`${import.meta.env.VITE_BASE_URL}/uploads/covers/${mediaData.cover}`} alt={mediaData.title} className="img-fluid rounded shadow-lg" />
                     </div>
                     <div className="col-md-8">
                         <h1 className="display-4 fw-bold">{mediaData.title.replace(/_/g, ' ')}</h1>

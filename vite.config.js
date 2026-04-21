@@ -1,31 +1,36 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    proxy: {
-      // Amikor a fetch azt látja, hogy '/users', átirányítja a backendre
-      '/users': {
-        target: 'http://192.168.9.105:4000', // A backend IP-je és portja
-        changeOrigin: true,
-        secure: false,
-      },
-      '/videos': {
-        target: 'http://192.168.9.105:4000',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/admin': {
-        target: 'http://192.168.9.105:4000',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/feedback': {
-        target: 'http://192.168.9.105:4000',
-        changeOrigin: true,
-        secure: false,
+export default defineConfig(({ mode }) => {
+  // Betöltjük a .env fájlokat a process.cwd() könyvtárból
+  const env = loadEnv(mode, process.cwd(), '');
+
+  return {
+    plugins: [react()],
+    server: {
+      proxy: {
+        // A proxy a környezeti változóból olvassa be a célt
+        '/users': {
+          target: env.VITE_BASE_URL,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/videos': {
+          target: env.VITE_BASE_URL,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/admin': {
+          target: env.VITE_BASE_URL,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/feedback': {
+          target: env.VITE_BASE_URL,
+          changeOrigin: true,
+          secure: false,
+        }
       }
     }
   }

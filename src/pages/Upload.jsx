@@ -21,6 +21,7 @@ export default function Upload() {
         imdb_rating: '',
         pg_rating: '',
         quality: '',
+        season: '1',
         cover_file: null, 
         video_file: null
     });
@@ -46,7 +47,6 @@ export default function Upload() {
         try {
             const dataToSend = new FormData();
     
-            // COMMON FIELDS (backend expects these exact names)
             dataToSend.append("title", formData.title);
             dataToSend.append("desc", formData.description);
             dataToSend.append("studio", formData.studio);
@@ -54,20 +54,12 @@ export default function Upload() {
             dataToSend.append("pg", formData.pg_rating);
             dataToSend.append("quality", formData.quality);
     
-            // =========================
-            // COVER (BOTH MOVIE + SHOW)
-            // =========================
             if (formData.cover_file) {
                 dataToSend.append("cover", formData.cover_file);
             }
     
-            // =========================
-            // SHOW UPLOAD
-            // =========================
-            if (uploadType === "show") {
-                dataToSend.append("season", 1);
-    
-                console.log("Uploading SHOW...");
+            if (uploadType === "show") { // Ha sorozat
+                dataToSend.append("season", formData.season); 
     
                 if (formData.video_file) {
                     dataToSend.append("episodes", formData.video_file);
@@ -86,12 +78,7 @@ export default function Upload() {
                 toast.success("Show uploaded successfully!");
             }
     
-            // =========================
-            // MOVIE UPLOAD
-            // =========================
             else {
-                console.log("Uploading MOVIE...");
-    
                 if (formData.video_file) {
                     dataToSend.append("movie", formData.video_file);
                 }
@@ -109,7 +96,7 @@ export default function Upload() {
                 toast.success("Movie uploaded successfully!");
             }
     
-            // RESET FORM
+            // reset after ipload
             setFormData({
                 title: "",
                 description: "",
@@ -117,6 +104,7 @@ export default function Upload() {
                 imdb_rating: "",
                 pg_rating: "",
                 quality: "",
+                season: "1",
                 cover_file: null,
                 video_file: null
             });
@@ -195,6 +183,21 @@ export default function Upload() {
                                             <option value="show">Show</option>
                                         </select>
                                     </div>
+                                    {uploadType === 'show' && (
+                                        <div className="mb-3">
+                                            <label className="form-label text-custom-yellow fw-bold small text-uppercase">Season</label>
+                                            <input
+                                                type="number"
+                                                name="season"
+                                                className="form-control blurry-light border-0 text-dark"
+                                                placeholder="e.g., 1"
+                                                value={formData.season}
+                                                onChange={handleInputChange}
+                                                min="1"
+                                                required
+                                            />
+                                        </div>
+                                    )}
                                     <div className="mb-3">
                                         <label className="form-label text-custom-yellow fw-bold small text-uppercase">Title</label>
                                         <input type="text" name="title" className="form-control blurry-light border-0 text-dark" placeholder="e.g., The Matrix" value={formData.title} onChange={handleInputChange} required />
@@ -223,15 +226,13 @@ export default function Upload() {
                                             <input type="text" name="quality" className="form-control blurry-light border-0 text-dark" placeholder="e.g., 1080p" value={formData.quality} onChange={handleInputChange} />
                                         </div>
                                     </div>
-                                    
-                                    {/* --- Corrected File Inputs --- */}
                                     <div className="row">
                                         <div className="col-md-6 mb-3">
                                             <label className="form-label text-custom-yellow fw-bold small text-uppercase">COVER IMAGE</label>
                                             <input type="file" name="cover_file" className="form-control blurry-light border-0 text-dark" onChange={handleFileChange} accept="image/*" />
                                         </div>
                                         <div className="col-md-6 mb-3">
-                                            <label className="form-label text-custom-yellow fw-bold small text-uppercase">VIDEO FILE</label>
+                                            <label className="form-label text-custom-yellow fw-bold small text-uppercase">{uploadType == "show" ? "VIDEO FILES" : "VIDEO FILE"}</label>
                                             <input type="file" name="video_file" className="form-control blurry-light border-0 text-dark" onChange={handleFileChange} accept="video/mp4,video/x-m4v,video/*" />
                                         </div>
                                     </div>
