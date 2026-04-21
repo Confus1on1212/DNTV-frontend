@@ -6,8 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { getMovie, getEpisode } from "../api/videos.js";
 
-const BASE_URL = "http://192.168.9.105:4000";
-
 export default function Play() {
     const [videoUrl, setVideoUrl] = useState('');
     const [isLoading, setIsLoading] = useState(true);
@@ -42,12 +40,12 @@ export default function Play() {
                     media = await getEpisode(mediaId, episode, season);
 
                     if (!media || !media.file) throw new Error("Az epizód videófájlja nem található.");
-                    finalVideoUrl = `${BASE_URL}/uploads/episodes/${media.file}`;
+                    finalVideoUrl = `${import.meta.env.VITE_BASE_URL}/uploads/episodes/${media.file}`;
                 } else {
                     media = await getMovie(mediaId);
                     const movieData = Array.isArray(media) ? media[0] : media;
                     if (!movieData || !movieData.file) throw new Error("A film videófájlja nem található.");
-                    finalVideoUrl = `${BASE_URL}/uploads/movies/${movieData.file}`;
+                    finalVideoUrl = `${import.meta.env.VITE_BASE_URL}/uploads/movies/${movieData.file}`;
                 }
                 
                 setVideoUrl(finalVideoUrl);
@@ -123,7 +121,7 @@ export default function Play() {
                         height="auto"
                         controls
                         autoPlay
-                        poster={cover ? `${BASE_URL}/uploads/covers/${cover}` : ''}
+                        poster={cover ? `${import.meta.env.VITE_BASE_URL}/uploads/covers/${cover}` : ''}
                         onLoadedMetadata={(e) => { e.target.currentTime = secondsWatched; }}
                     >
                         <source src={videoUrl} type="video/mp4" />
