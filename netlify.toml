@@ -1,0 +1,32 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/users/*"
+  to = "https://nodejs209.dszcbaross.edu.hu/users/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/videos/*"
+  to = "https://nodejs209.dszcbaross.edu.hu/videos/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin/*"
+  to = "https://nodejs209.dszcbaross.edu.hu/admin/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/feedback/*"
+  to = "https://nodejs209.dszcbaross.edu.hu/feedback/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
