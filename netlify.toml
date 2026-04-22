@@ -15,6 +15,12 @@
   force = true
 
 [[redirects]]
+  from = "/uploads/*"
+  to = "https://nodejs209.dszcbaross.edu.hu/uploads/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/admin/*"
   to = "https://nodejs209.dszcbaross.edu.hu/admin/:splat"
   status = 200
