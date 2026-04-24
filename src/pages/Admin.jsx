@@ -191,6 +191,55 @@ export default function Admin() {
                                         </tbody>
                                     </table>
                                 </div>
+                                <h2 className="text-custom-yellow fw-bold small text-uppercase mt-4 mb-3">Movie Management</h2>
+                                <div className="table-responsive">
+                                    <table className="table table-light table-hover align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Description</th>
+                                                <th>Studio</th>
+                                                <th>Imdb rating</th>
+                                                <th>Pg rating</th>
+                                                <th>Cover</th>
+                                                <th>Quality</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {allUsers.map((u, index) => (
+                                                <tr key={u.user_id} style={dirtyRows[u.user_id] ? { borderLeft: '3px solid orange' } : {}}>
+                                                    <td>{u.user_id}</td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={u.username}
+                                                            onChange={(e) => handleChange(index, "username", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={u.email}
+                                                            onChange={(e) => handleChange(index, "email", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <select
+                                                            className="form-select bg-transparent border-secondary"
+                                                            value={u.role}
+                                                            onChange={(e) => handleChange(index, "role", Number(e.target.value))}
+                                                        >
+                                                            <option value={0}>User</option>
+                                                            <option value={1}>Admin</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <div className="d-grid mt-4">
                                      <Btn btnClass={"btn btn-custom-yellow py-2 fw-bold"} content={"SAVE USER CHANGES"} onClick={handleSave} disabled={Object.keys(dirtyRows).length === 0} />
                                 </div>
