@@ -163,7 +163,7 @@ export default function Detail() {
             <div className="container text-black mt-5">
                 <div className="row">
                     <div className="col-md-4 d-none d-md-block">
-                        <img src={`${import.meta.env.VITE_BASE_URL}/uploads/covers/${mediaData.cover}`} alt={mediaData.title} className="img-fluid rounded shadow-lg" />
+                        <img src={`/uploads/covers/${mediaData.cover}`} alt={mediaData.title} className="img-fluid rounded shadow-lg" />
                     </div>
                     <div className="col-md-8">
                         <h1 className="display-4 fw-bold">{mediaData.title.replace(/_/g, ' ')}</h1>
