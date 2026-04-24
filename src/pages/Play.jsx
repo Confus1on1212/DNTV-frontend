@@ -40,12 +40,12 @@ export default function Play() {
                     media = await getEpisode(mediaId, episode, season);
 
                     if (!media || !media.file) throw new Error("Az epizód videófájlja nem található.");
-                    finalVideoUrl = `${import.meta.env.VITE_BASE_URL}/uploads/episodes/${media.file}`;
+                    finalVideoUrl = `/uploads/episodes/${media.file}`;
                 } else {
                     media = await getMovie(mediaId);
                     const movieData = Array.isArray(media) ? media[0] : media;
                     if (!movieData || !movieData.file) throw new Error("A film videófájlja nem található.");
-                    finalVideoUrl = `${import.meta.env.VITE_BASE_URL}/uploads/movies/${movieData.file}`;
+                    finalVideoUrl = `/uploads/movies/${movieData.file}`;
                 }
                 
                 setVideoUrl(finalVideoUrl);
