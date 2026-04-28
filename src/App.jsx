@@ -92,9 +92,13 @@ function App() {
     navigate('/')
   }
 
+  async function onNavigateUser() {
+    navigate('/user')
+  }
+
   return (
     <div className="app-root">
-      <Header user={user} onLogOut={onLogout} onAdminPage={false}/>
+      <Header user={user} onLogOut={onLogout} onAdminPage={false} onNavigateUser={onNavigateUser}/>
       <div className="carousel-wrapper">
         <Carousel className="carousel" autoplay={{ dotDuration: true }} autoplaySpeed={5000} draggable={true} arrows arrowSize={32} dotHeight={6}>
           {featuredSlides.map((slide) => {

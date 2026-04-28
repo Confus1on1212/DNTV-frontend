@@ -52,7 +52,7 @@ export async function logout() {
 }
 
 export async function sendFeedback(feedbackData) {
-    console.log("Adatok küldése a szervernek:", feedbackData);
+    // console.log("Adatok küldése a szervernek:", feedbackData);
 
     const res = await fetch(`/feedback/postFeedback`, {
         method: 'POST',
@@ -71,4 +71,8 @@ export async function sendFeedback(feedbackData) {
     }
     
     return responseData;
+}
+
+export function updateUser(userData) {
+    
 }
