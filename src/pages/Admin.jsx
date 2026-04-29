@@ -32,10 +32,30 @@ export default function Admin() {
         }));
     };
 
+    const handleChangeForMovies = (index, field, value) => {
+        const updatedMovies = [...movies];
+        const movie = updatedMovies[index];
+        movie[field] = value;
+        setMovies(updatedMovies);
+        setDirtyRows(prev => ({
+            ...prev,
+            [movie.movieid]: true
+        }));
+    };
+    const handleChangeForShows = (index, field, value) => {
+        const updatedShows = [...shows];
+        const show = updatedShows[index];
+        show[field] = value;
+        setShows(updatedShows);
+        setDirtyRows(prev => ({
+            ...prev,
+            [show.showid]: true
+        }));
+    };
     const handleSave = async () => {
         const changedUsers = allUsers.filter(user => dirtyRows[user.user_id]);
         if (changedUsers.length === 0) {
-            toast.info("No changes to save.");
+            toast.info("Nincs mit menteni!");
             return;
         }
 
@@ -53,10 +73,124 @@ export default function Admin() {
                 toast.error(data.error);
             } else {
                 setAllUsers(data);
-                toast.success("Users updated successfully!");
+                toast.success("Felhasználók sikeresen mentve!");
             }
         } catch (err) {
-            toast.error("Error saving changes.");
+            toast.error("Mentési hiba.");
+        }
+    };
+    const handleSaveForMovies = async () => {
+        const changedMovies = movies.filter(movie => dirtyRows[movie.movieid]);
+        if (changedMovies.length === 0) {
+            toast.info("Nincs mint menteni.");
+            return;
+        }
+
+        try {
+            await fetch("/admin/bulk-update-movies", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(changedMovies)
+            });
+
+            setDirtyRows({});
+            const data = await getAllUsers();
+
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                setAllUsers(data);
+                toast.success("Filmek sikeresen frissítve!");
+            }
+        } catch (err) {
+            toast.error("Hiba mentés közben");
+        }
+    };
+    const handleSaveForShows = async () => {
+        const changedShows = shows.filter(show => dirtyRows[show.showid]);
+        if (changedShows.length === 0) {
+            toast.info("Nincsen mit menteni!");
+            return;
+        }
+
+        try {
+            await fetch("/admin/bulk-update-shows", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(changedShows)
+            });
+
+            setDirtyRows({});
+            const data = await getAllUsers();
+
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                setAllUsers(data);
+                toast.success("Show sikeresen frissítve!");
+            }
+        } catch (err) {
+            toast.error("Hiba mentés közben");
+        }
+    };
+    const handleDeleteUser = async (id) => {
+        if (!window.confirm("Biztosan ki akarod törölni ezt a felhasználót?")) return;
+
+        try {
+            const res = await fetch(`/admin/delete-user/${id}`, {
+                method: "DELETE"
+            });
+
+            const data = await res.json();
+
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                setAllUsers(prev => prev.filter(u => u.user_id !== id));
+                toast.success("Felhasználó törölve!");
+            }
+        } catch (err) {
+            toast.error("Törlés sikertelen.");
+        }
+    };
+    const handleDeleteMovie = async (id) => {
+        if (!window.confirm("Biztos ki akarod törölni ezt a filmet?")) return;
+
+        try {
+            const res = await fetch(`/admin/delete-movie/${id}`, {
+                method: "DELETE"
+            });
+
+            const data = await res.json();
+
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                setMovies(prev => prev.filter(m => m.movieid !== id));
+                toast.success("Film törölve!");
+            }
+        } catch (err) {
+            toast.error("Törlés sikertelen!");
+        }
+    };
+    const handleDeleteShow = async (id) => {
+        if (!window.confirm("Biztos ki akarod törölni ezt a show-t?")) return;
+
+        try {
+            const res = await fetch(`/admin/delete-show/${id}`, {
+                method: "DELETE"
+            });
+
+            const data = await res.json();
+
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                setShows(prev => prev.filter(s => s.showid !== id));
+                toast.success("Show kitörölve!");
+            }
+        } catch (err) {
+            toast.error("Törlés sikertelen!");
         }
     };
 
@@ -67,18 +201,18 @@ export default function Admin() {
                 if (data && !data.error) {
                     setUser(data);
                     if (data.role !== 1) {
-                        toast.error("You do not have permission to view this page.", {
+                        toast.error("Nincsen engedélyed ezt az oldalt megnézni!", {
                             onClose: () => navigate('/')
                         });
                     }
                 } else {
-                    toast.error("You are not logged in.", {
+                    toast.error("Nem vagy bejelentkezve!", {
                         onClose: () => navigate('/')
                     });
                 }
             } catch (err) {
-                console.error("Auth check failed", err);
-                toast.error("An error occurred during authentication.", {
+                console.error("auth csekk fail", err);
+                toast.error("Hiba autentikáció során!.", {
                     onClose: () => navigate('/')
                 });
             }
@@ -91,7 +225,8 @@ export default function Admin() {
                     getAllMovies(),
                     getAllShows()
                 ]);
-
+                console.log(Object.keys(showsData[0]));
+                //console.log(`${moviesData}`)
                 setAllUsers(usersData.error ? [] : usersData);
                 setMovies(moviesData.error ? [] : moviesData);
                 setShows(showsData.error ? [] : showsData);
@@ -101,13 +236,13 @@ export default function Admin() {
                 if (showsData.error) toast.error(showsData.error);
 
             } catch (err) {
-                toast.error('Failed to fetch page data.');
+                toast.error('Nem sikerült fetchelni a data-t.');
             }
         }
 
         checkSession().then(() => {
             if (user?.role === 1 || (user === null && window.location.pathname.includes('admin'))) {
-                 fetchData();
+                fetchData();
             }
         });
     }, [navigate, user?.role]);
@@ -115,11 +250,11 @@ export default function Admin() {
     async function onLogout() {
         try {
             await logout();
-            toast.success("Successfully logged out!");
+            toast.success("Sikeresen kijelentkezve!");
             setUser(null);
             navigate('/');
         } catch (error) {
-            toast.error("Error during logout.");
+            toast.error("Hiba kijelentkezés során");
         }
     }
 
@@ -154,6 +289,7 @@ export default function Admin() {
                                                 <th>Username</th>
                                                 <th>Email</th>
                                                 <th>Role</th>
+                                                <th>Művelet</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -186,54 +322,13 @@ export default function Admin() {
                                                             <option value={1}>Admin</option>
                                                         </select>
                                                     </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <h2 className="text-custom-yellow fw-bold small text-uppercase mt-4 mb-3">Movie Management</h2>
-                                <div className="table-responsive">
-                                    <table className="table table-light table-hover align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th>Title</th>
-                                                <th>Description</th>
-                                                <th>Studio</th>
-                                                <th>Imdb rating</th>
-                                                <th>Pg rating</th>
-                                                <th>Cover</th>
-                                                <th>Quality</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {allUsers.map((u, index) => (
-                                                <tr key={u.user_id} style={dirtyRows[u.user_id] ? { borderLeft: '3px solid orange' } : {}}>
-                                                    <td>{u.user_id}</td>
                                                     <td>
-                                                        <input
-                                                            type="text"
-                                                            className="form-control bg-transparent border-secondary"
-                                                            value={u.username}
-                                                            onChange={(e) => handleChange(index, "username", e.target.value)}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            type="text"
-                                                            className="form-control bg-transparent border-secondary"
-                                                            value={u.email}
-                                                            onChange={(e) => handleChange(index, "email", e.target.value)}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <select
-                                                            className="form-select bg-transparent border-secondary"
-                                                            value={u.role}
-                                                            onChange={(e) => handleChange(index, "role", Number(e.target.value))}
+                                                        <button
+                                                            className="btn btn-danger btn-sm"
+                                                            onClick={() => handleDeleteUser(u.user_id)}
                                                         >
-                                                            <option value={0}>User</option>
-                                                            <option value={1}>Admin</option>
-                                                        </select>
+                                                            Delete
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -241,7 +336,191 @@ export default function Admin() {
                                     </table>
                                 </div>
                                 <div className="d-grid mt-4">
-                                     <Btn btnClass={"btn btn-custom-yellow py-2 fw-bold"} content={"SAVE USER CHANGES"} onClick={handleSave} disabled={Object.keys(dirtyRows).length === 0} />
+                                    <Btn btnClass={"btn btn-custom-yellow py-2 fw-bold"} content={"SAVE USER CHANGES"} onClick={handleSave} disabled={Object.keys(dirtyRows).length === 0} />
+                                </div>
+
+
+
+                                <h2 className="text-custom-yellow fw-bold small text-uppercase mt-4 mb-3">Movie Management</h2>
+                                <div className="table-responsive">
+                                    <table className="table table-light table-hover align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Title</th>
+                                                <th>Description</th>
+                                                <th>Studio</th>
+                                                <th>Imdb rating</th>
+                                                <th>Pg rating</th>
+                                                <th>Quality</th>
+                                                <th>Művelet</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            {movies.map((m, index) => (
+                                                <tr key={m.movieid} style={dirtyRows[m.movieid] ? { borderLeft: '3px solid orange' } : {}}>
+                                                    <td>{m.movieid}</td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={m.title}
+                                                            onChange={(e) => handleChangeForMovies(index, "title", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={m.description}
+                                                            onChange={(e) => handleChangeForMovies(index, "description", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={m.studio}
+                                                            onChange={(e) => handleChangeForMovies(index, "studio", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={m.imdbrating}
+                                                            onChange={(e) => handleChangeForMovies(index, "imdbrating", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={m.pgrating}
+                                                            onChange={(e) => handleChangeForMovies(index, "pgrating", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={m.quality}
+                                                            onChange={(e) => handleChangeForMovies(index, "quality", e.target.value)}
+                                                        />
+                                                    </td>
+                                                <td>
+                                                        <button
+                                                            className="btn btn-danger btn-sm"
+                                                            onClick={() => handleDeleteMovie(m.movieid)}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </td>
+
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="d-grid mt-4">
+                                    <Btn btnClass={"btn btn-custom-yellow py-2 fw-bold"} content={"SAVE MOVIE CHANGES"} onClick={handleSaveForMovies} disabled={Object.keys(dirtyRows).length === 0} />
+                                </div>
+
+
+
+
+
+
+                                {/*██████████████████████████████████████████████████████████████████████████████innentolshow cuuuucucu█████████████████████████████████████████████*/}
+
+
+                                <h2 className="text-custom-yellow fw-bold small text-uppercase mt-4 mb-3">Show Management</h2>
+                                <div className="table-responsive">
+                                    <table className="table table-light table-hover align-middle">
+                                        {/*'showid', 'title', 'description', 'studio', 'imdbrating', 'pgrating', 'quality']*/}
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Title</th>
+                                                <th>Description</th>
+                                                <th>Studio</th>
+                                                <th>Imdb rating</th>
+                                                <th>Pg rating</th>
+                                                <th>Quality</th>
+                                                <th>Művelet</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            {shows.map((s, index) => (
+                                                <tr key={s.showid} style={dirtyRows[s.showid] ? { borderLeft: '3px solid orange' } : {}}>
+                                                    <td>{s.showid}</td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={s.title}
+                                                            onChange={(e) => handleChangeForShows(index, "title", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={s.description}
+                                                            onChange={(e) => handleChangeForShows(index, "description", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={s.studio}
+                                                            onChange={(e) => handleChangeForShows(index, "studio", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={s.imdbrating}
+                                                            onChange={(e) => handleChangeForShows(index, "imdbrating", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={s.pgrating}
+                                                            onChange={(e) => handleChangeForShows(index, "pgrating", e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control bg-transparent border-secondary"
+                                                            value={s.quality}
+                                                            onChange={(e) => handleChangeForShows(index, "quality", e.target.value)}
+                                                        />
+                                                    </td>
+                                                <td>
+                                                        <button
+                                                            className="btn btn-danger btn-sm"
+                                                            onClick={() => handleDeleteShow(s.showid)}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </td>
+
+
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="d-grid mt-4">
+                                    <Btn btnClass={"btn btn-custom-yellow py-2 fw-bold"} content={"SAVE SHOW CHANGES"} onClick={handleSaveForShows} disabled={Object.keys(dirtyRows).length === 0} />
                                 </div>
 
                                 <h2 className="text-custom-yellow fw-bold small text-uppercase mt-5 mb-3">Content Overview</h2>
@@ -253,7 +532,7 @@ export default function Admin() {
                                         </div>
                                     </div>
                                     <div className="col-md-6 mt-3 mt-md-0">
-                                         <div className="p-3 rounded text-custom-yellow blurry-light">
+                                        <div className="p-3 rounded text-custom-yellow blurry-light">
                                             <h4>Shows</h4>
                                             <p className="fs-1 fw-bold mb-0">{shows.length}</p>
                                         </div>
