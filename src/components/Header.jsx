@@ -1,7 +1,7 @@
 import { Link, NavLink, useLocation } from "react-router";
 import Btn from './Btn'
 
-export default function Header({user, onLogOut}) {
+export default function Header({user, onLogOut, onNavigateUser}) {
     const isLoggedIn = !!user
     // console.log(user);
     const isAdmin = user?.role === 1
@@ -32,6 +32,7 @@ export default function Header({user, onLogOut}) {
                         {isAdmin &&
                             <Link to={'/admin'}><Btn btnClass={'btn btn-outline-custom-yellow mx-1'} content={'Admin'}/></Link>
                         }
+                        <Btn btnClass={'btn btn-outline-custom-yellow mx-1'} content={'Profile'} onClick={onNavigateUser} />
                         <Btn btnClass={'btn btn-outline-custom-red mx-1'} content={'Log Out'} onClick={onLogOut} />
                     </div>
                 }
