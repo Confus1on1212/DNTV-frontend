@@ -8,7 +8,7 @@ TODO> detail page fix, admin page fix, user.js, tobb movie, show, one more gif o
 
 ## Home Page
 
-![Home Page Gif](https://d1ffb1nfch3ckq.cloudfront.net/5vt4a%2Fpreview%2F77735155%2Fmain_large.gif?response-content-disposition=inline%3Bfilename%3D%22main_large.gif%22%3B&response-content-type=image%2Fgif&Expires=1777545981&Signature=bWnVV3kTr~G3aCw~43VHF19sVMOd-t9-zYwK7lm-Cv9YjfDUyJ4kYSyquNaI~lxSuYFmKm9Yv4KMltfazrlO5LfR7ETz4n1Py77M6lsV8s2QPTl83u5v02~FL8secn1zbkk2VmETqC-HGE3ZklHZNiVHjQHlbOxxJL~xc45a7r91vqutXiw3srFknGl4~HVDnXTMVX9hAaqwH7Prc7ZG~mXSaB-UBk~cxEWouTnaudFmKmNa6DaG83IEZ-7X-h-J19ejZaJwJAP~H4u2yJhW3nsdZmwlQJEyBRJdeNmrRk5k28dgxUE8~ShvC72fpKS1G9Hv6nyoiTmA4LEGdGdhjQ__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ)
+![Home Page Gif](https://d1ffb1nfch3ckq.cloudfront.net/5vt4a%2Fpreview%2F77735155%2Fmain_full.gif?response-content-disposition=inline%3Bfilename%3D%22main_full.gif%22%3B&response-content-type=image%2Fgif&Expires=1777546595&Signature=Xtya6A7V0MgU3v4Z0MOvu7oOjZP17mt7CHhGP6wpmR3TyzPAbIxc-rIuFomQsxTC5r-JnrQPVl9hKlOG6Ttkybbbu5YacMUIsvLjBkXCernVk3cuJRgg9z~EAsaXm4Gm6nkwZ-rMN1tEb-jzx0EVaX-7avJFxDpOFwIVOWlMufKlAQorL69Z83vYcptEIHrSleEMDiPGfXFwH5T6Qs2Rdpq7ABQI0LRjgENNCyupfQY7u4KlCFrfvEPcBj8~L8hpbutZCIoTlw87Mx884NgZLfcrD6aVaby-8dgQ8yaeYTQ-iGzQuN~Kq4UkbqGi-FK-gtaI8TWPWzJ5Rhv0j3Fsrg__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ)
 
 ## Sign up / Log in
 
