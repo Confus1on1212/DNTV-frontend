@@ -189,11 +189,13 @@ export default function Detail() {
 
                 {isShow && (
                     <div className="mt-3">
+                        {console.log(filteredEpisodes)}
                         <Slider
                             title={`Episodes in Season ${selectedSeason}`}
                             slides={filteredEpisodes}
                             isLoading={isLoading}
                             isEpisodeSlider={true}
+                            showCover={mediaData.cover}
                         />
                     </div>
                 )}
