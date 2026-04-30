@@ -19,7 +19,7 @@ export default function Login() {
     event.preventDefault();
 
     if (!email || !psw) {
-      return toast.error("Kérlek, tölts ki minden mezőt!");
+      return toast.error("Please fill out every field!");
     }
 
     try {
@@ -33,7 +33,7 @@ export default function Login() {
       }
     } catch (err) {
       console.log(err);
-      toast.error("Nem sikerült csatlakozni a szerverhez!");
+      toast.error("Couldn't load!");
     }
   }
 

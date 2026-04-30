@@ -73,6 +73,16 @@ export async function sendFeedback(feedbackData) {
     return responseData;
 }
 
-export function updateUser(userData) {
-    
+export async function updateUser(formData) {
+    const res = await fetch("/users/modifyUser", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: 'include',
+        body: JSON.stringify(formData)
+    });
+    if (!res.ok) {
+        const data = await res.json()
+        return { error: data?.error }
+    }
+    return await res.json()
 }

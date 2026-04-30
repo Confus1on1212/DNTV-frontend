@@ -22,6 +22,7 @@ export default function Detail() {
     const [filteredEpisodes, setFilteredEpisodes] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [otherProjects, setOtherProjects] = useState([]);
+    const [otherProjects2, setOtherProjects2] = useState([]);
 
 
     const { slug } = useParams();
@@ -76,7 +77,7 @@ export default function Detail() {
                 const allMedia = [...allMovies, ...allShows]; // csnal nagy tomab
                 const foundMedia = allMedia.find(item => generateSlug(item.title) === slug); // megkeresi hogy melyik media
 
-                if (!foundMedia) throw new Error("A keresett tartalom nem található.");
+                if (!foundMedia) throw new Error("Couldn't find");
 
                 setMediaData(foundMedia); // feltolti a mediadatat
 
@@ -86,7 +87,9 @@ export default function Detail() {
                 }
 
                 const randomProjects = await getRandomProjects(12);
+                const randomProjects2 = await getRandomProjects(12);
                 setOtherProjects(randomProjects);
+                setOtherProjects2(randomProjects2);
             } catch (err) {
                 toast.error(err.message);
                 navigate('/');
@@ -160,7 +163,7 @@ export default function Detail() {
         <div className="detail-overlay">
             <Header user={user} onLogOut={onLogout} onAdminPage={false} />
 
-            <div className="container text-black mt-5">
+            <div className="container text-black mt-4">
                 <div className="row">
                     <div className="col-md-4 d-none d-md-block">
                         <img src={`/uploads/covers/${mediaData.cover}`} alt={mediaData.title} className="img-fluid rounded shadow-lg" />
@@ -177,7 +180,7 @@ export default function Detail() {
                         )}
 
                         {isShow && (
-                            <div className="mt-3" style={{ maxWidth: '250px' }}>
+                            <div className="mt-1" style={{ maxWidth: '250px' }}>
                                 <label className="form-label text-dark">Season</label>
                                 <select className="form-select text-dark" value={selectedSeason} onChange={handleSeasonChange}>
                                     {seasons.map(s => <option key={s.season_number} value={s.season_number}>Season {s.season_number}</option>)}
@@ -188,7 +191,7 @@ export default function Detail() {
                 </div>
 
                 {isShow && (
-                    <div className="mt-3">
+                    <div className="mt-2">
                         {console.log(filteredEpisodes)}
                         <Slider
                             title={`Episodes in Season ${selectedSeason}`}
@@ -200,8 +203,9 @@ export default function Detail() {
                     </div>
                 )}
 
-                <div className="mt-3">
-                    <Slider title={"Others have watched this"} slides={otherProjects} isLoading={isLoading} isEpisodeSlider={false} />
+                <div className="mt-1">
+                    <Slider title={"Others have watched these"} slides={otherProjects} isLoading={isLoading} isEpisodeSlider={false} />
+                    <Slider title={"You may also like these"} slides={otherProjects2} isLoading={isLoading} isEpisodeSlider={false} />
                 </div>
                 
 

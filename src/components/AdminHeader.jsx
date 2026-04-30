@@ -12,15 +12,6 @@ export default function Header({ user, onLogOut }) {
             <div className="container-fluid d-flex align-items-center justify-content-between">
                 <Link to={"/"} className="navbar-brand user-select-none text-decoration-none text-custom-yellow text-uppercase fw-bolder hover ms-3">DNTV</Link>
 
-
-                {isLoggedIn && (
-                    <div className="navbar-nav nav-underline flex-row align-items-center overflow-x-auto">
-                        <NavLink className="nav-link text-custom-yellow user-select-none active" to="/admin/users">Users</NavLink>
-                        <NavLink className="nav-link text-custom-blue user-select-none" to="/admin/movies">Movies</NavLink>
-                        <NavLink className="nav-link text-custom-blue user-select-none" to="/admin/shows">Shows</NavLink>
-                    </div>
-                )}
-
                 {isLoggedIn &&
                     <div className="d-flex">
                         {isAdmin &&

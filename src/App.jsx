@@ -26,6 +26,8 @@ function App() {
   const [user, setUser] = useState(null)
 
   const [featuredSlides, setFeaturedSlides] = useState([]);
+  const [random1, setRandom1] = useState([]);
+  const [random2, setRandom2] = useState([]);
   const [topRatedProjects, setTopRatedProjects] = useState([])
   const [topRatedSeries, setTopRatedSeries] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
@@ -39,20 +41,24 @@ function App() {
       try {
         setIsLoading(true);
 
-        const [featuredData, topRatedData, topRatedMovieData, topRatedSeriesData] = await Promise.all([ //megvarja hogy mind valaszt adjon
+        const [featuredData, random1, random2, topRatedData, topRatedMovieData, topRatedSeriesData] = await Promise.all([ //megvarja hogy mind valaszt adjon
           getRandomProjects(6),
+          getRandomProjects(12),
+          getRandomProjects(12),
           getTopRatedTVSeriesAndMovies(10),
           getTopRatedTVMovies(10),
           getTopRatedTVseries(10)
         ]);
 
         setFeaturedSlides(featuredData); // carousel
-        setTopRatedProjects(topRatedData); 
+        setTopRatedProjects(topRatedData);
         setTopRatedSeries(topRatedSeriesData); // top rated show
         setTopRatedMovies(topRatedMovieData);
+        setRandom1(random1)
+        setRandom2(random2)
 
       } catch (error) {
-        toast.error("Hiba történt az adatok betöltése során.");
+        toast.error("Error loading in the page");
         console.error(error);
       } finally {
         setIsLoading(false);
@@ -98,7 +104,7 @@ function App() {
 
   return (
     <div className="app-root">
-      <Header user={user} onLogOut={onLogout} onAdminPage={false} onNavigateUser={onNavigateUser}/>
+      <Header user={user} onLogOut={onLogout} onAdminPage={false} onNavigateUser={onNavigateUser} />
       <div className="carousel-wrapper">
         <Carousel className="carousel" autoplay={{ dotDuration: true }} autoplaySpeed={5000} draggable={true} arrows arrowSize={32} dotHeight={6}>
           {featuredSlides.map((slide) => {
@@ -108,26 +114,26 @@ function App() {
             let displayTitle = slide.title.replace(/_/g, ' '); // alahuzas -> space
 
             const searchParams = new URLSearchParams();
-            
+
             if (slide.season && slide.episodeid) { // HA sorozat
               searchParams.append('season', slide.season);
               searchParams.append('episode', slide.episodeid);
-              
+
               // const seasonNum = String(slide.season).padStart(2, '0');
               // const episodeNum = String(slide.episodeid).padStart(2, '0');
               // displayTitle = `${displayTitle} S${seasonNum}E${episodeNum}`;
             }
 
-            
+
             if (slide.secondsWatched > 0) { // HA mar belekezdett a nezesbe, nemfix hogy kelleni foge
               searchParams.append('t', slide.secondsWatched);
             }
 
             const queryString = searchParams.toString();
             const finalUrl = `/details/${slug}?${queryString}`;
-            const linkState = { 
-                cover: slide.cover,
-                id: slide.movieid 
+            const linkState = {
+              cover: slide.cover,
+              id: slide.movieid
             };
 
             return (
@@ -135,13 +141,16 @@ function App() {
             )
           })}
         </Carousel>
-        
-        
+
+
         <Slider title="Top-Rated " slides={topRatedProjects} isLoading={isLoading} />
         <Slider title="Top-rated TV series" slides={topRatedSeries} isLoading={isLoading} />
         <Slider title="Top-rated Movies" slides={topRatedMovies} isLoading={isLoading} />
+        <Slider title="Other top projects " slides={random1} isLoading={isLoading} />
+        <Slider title="People's favourite" slides={random2} isLoading={isLoading} />
 
-        <Footer/>     
+
+        <Footer />
 
         <ToastContainer position="bottom-right" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
       </div>

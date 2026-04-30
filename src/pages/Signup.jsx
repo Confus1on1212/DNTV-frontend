@@ -23,11 +23,11 @@ export default function Signup() {
         if(e) e.preventDefault();
 
         if (!email || !psw || !psw2 || !username) {
-            return toast.error("Kérlek tölts ki minden mezőt!");
+            return toast.error("Please fill out every field");
         }
 
         if(psw !== psw2) {
-            return toast.error("A jelszavak nem egyeznek!");
+            return toast.error("Passwords are not matching");
         }
         
         try {
@@ -42,7 +42,7 @@ export default function Signup() {
                 setTimeout(() => navigate('/'), 2500);
             }
         } catch (err) {
-            toast.error("Hiba a szerverrel való kapcsolódás során!");
+            toast.error("Couldn't load");
         }
     }
 

@@ -63,11 +63,12 @@ export default function Slider({ title, slides, isLoading, isEpisodeSlider, show
           }
           
           const uniqueKey = slide.episodeid ? `${slide.movieid}-${slide.episodeid}` : slide.movieid;
+          const image = slide.cover ? slide.cover : showCover
 
           return (
             <SwiperSlide key={uniqueKey}>
               <div className="movie-card-link">
-                <div className="movie-card" style={{ backgroundImage: `url(/uploads/covers/${slide.cover})` } || {backgroundImage: `url(/uploads/covers/${showCover})` }}>
+                <div className="movie-card" style={{ backgroundImage: `url(/uploads/covers/${image})` }}>
                   <div className="movie-card-overlay">
                     <p className='movie-card-title'>{slide.title.replace(/_/g, ' ')}</p>
                     <div className="play-button-wrapper">

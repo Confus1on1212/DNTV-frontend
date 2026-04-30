@@ -34,7 +34,7 @@ export default function Feedback() {
         // console.log("Feedback küldése:", formData);
 
         if (!user || !user.email) {
-            return toast.error("A visszajelzés küldéséhez be kell jelentkezned.");
+            return toast.error("To send feedback you have to log in");
         }
 
         setIsSubmitting(true)
@@ -59,7 +59,7 @@ export default function Feedback() {
             }
         } catch (err) {
             console.log(err);
-            toast.error("Nem sikerült csatlakozni a szerverhez!");
+            toast.error("Couldn't load!");
         } finally {
             setIsSubmitting(false)
         }
