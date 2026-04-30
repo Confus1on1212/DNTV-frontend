@@ -10,7 +10,7 @@ function generateSlug(title) {
   return title.toLowerCase().replace(/ /g, '-').replace(/_/g, '-').replace(/[^\w-]+/g, ''); // space -> -, _ -> -,  
 }
 
-export default function Slider({ title, slides, isLoading, isEpisodeSlider }) {
+export default function Slider({ title, slides, isLoading, isEpisodeSlider, showCover }) {
   if (isLoading) {
     return (
       <div className="category-slider">
@@ -67,7 +67,7 @@ export default function Slider({ title, slides, isLoading, isEpisodeSlider }) {
           return (
             <SwiperSlide key={uniqueKey}>
               <div className="movie-card-link">
-                <div className="movie-card" style={{ backgroundImage: `url(/uploads/covers/${slide.cover})` }}>
+                <div className="movie-card" style={{ backgroundImage: `url(/uploads/covers/${slide.cover})` } || {backgroundImage: `url(/uploads/covers/${showCover})` }}>
                   <div className="movie-card-overlay">
                     <p className='movie-card-title'>{slide.title.replace(/_/g, ' ')}</p>
                     <div className="play-button-wrapper">
