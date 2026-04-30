@@ -4,9 +4,7 @@ export default function Help() {
     const helpCategories = [
         { title: "Setting Up DNTV", content: "To get started, create an account and log in. You can access your profile settings to manage your viewing preferences." },
         { title: "Ads in DNTV", content: "As this is a student project, we do not run real commercial ads. Any advertisements seen are for UI demonstration only." },
-        { title: "Cancel Membership", content: "You can delete your account at any time in the profile section. No strings attached!" },
         { title: "Restrictions & Parental Controls", content: "Content ratings are displayed on movie cards. You can set age restrictions in your account settings." },
-        { title: "Accessibility", content: "We support screen readers and high-contrast modes to make DNTV accessible to everyone." },
         { title: "Playback Issues & Troubleshooting", content: "If a video doesn't load, try refreshing your browser or checking your internet connection." },
         { title: "Legal Policies, Notices and Reports", content: "Please refer to our Terms and Policies page for full legal information regarding this project." }
     ];

@@ -23,7 +23,7 @@ export default function Play() {
 
     useEffect(() => {
         if (!mediaId) {
-            toast.error("A tartalom nem indítható el, hiányzó azonosító.");
+            toast.error("Missing ID");
             navigate(-1); // Visszanavigál az előző oldalra
             return;
         }
@@ -39,12 +39,12 @@ export default function Play() {
                 if (isShow && episode && season) {
                     media = await getEpisode(mediaId, episode, season);
 
-                    if (!media || !media.file) throw new Error("Az epizód videófájlja nem található.");
+                    if (!media || !media.file) throw new Error("Format error");
                     finalVideoUrl = `/uploads/episodes/${media.file}`;
                 } else {
                     media = await getMovie(mediaId);
                     const movieData = Array.isArray(media) ? media[0] : media;
-                    if (!movieData || !movieData.file) throw new Error("A film videófájlja nem található.");
+                    if (!movieData || !movieData.file) throw new Error("Missing file");
                     finalVideoUrl = `/uploads/movies/${movieData.file}`;
                 }
                 
@@ -52,7 +52,7 @@ export default function Play() {
 
             } catch (err) {
                 console.error(err);
-                toast.error(err.message || "Hiba a videó betöltése közben.");
+                toast.error(err.message || "Couldn't load media");
             } finally {
                 setIsLoading(false);
             }

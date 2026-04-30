@@ -68,22 +68,34 @@ export default function User() {
 
         setIsSubmitting(true);
         try {
-            const updatedData = await updateUser(formData); // API hívás a frissítésre
+            const payload = {
+                username: formData.username,
+                email: formData.email,
+                originalEmail: initialUserData.email
+            };
+            console.log(payload);
             
-            // Frissítjük a helyi állapotot a szerverről visszakapott adatokkal
-            setUser(updatedData);
-            setFormData({ username: updatedData.username, email: updatedData.email });
-            setInitialUserData({ username: updatedData.username, email: updatedData.email });
 
-            toast.success("Your settings have been updated successfully!");
+            const updatedUser = await updateUser(payload);
+            console.log(updateUser);
+            
+
+            setUser(updatedUser);
+            setInitialUserData({
+                username: updatedUser.username,
+                email: updatedUser.email
+            });
+            setIsDirty(false);
+
+            toast.success("Settings updated successfully!");
         } catch (err) {
             console.error(err);
-            toast.error(err.message || "Failed to update settings.");
+            toast.error(err.message || "Failed to update.");
         } finally {
             setIsSubmitting(false);
         }
     };
-    
+
     async function onLogout() {
         try {
             await logout();
@@ -115,7 +127,7 @@ export default function User() {
                         <div className="p-4 p-md-5 blurry-light rounded shadow-lg">
                             <h1 className="text-custom-yellow fw-bold text-uppercase text-center mb-4">User Settings</h1>
                             <form onSubmit={handleSubmit}>
-                                
+
                                 <div className="mb-3">
                                     <label htmlFor="username" className="form-label text-custom-yellow fw-bold small text-uppercase">Username</label>
                                     <input
@@ -129,7 +141,7 @@ export default function User() {
                                         required
                                     />
                                 </div>
-                                
+
                                 <div className="mb-4">
                                     <label htmlFor="email" className="form-label text-custom-yellow fw-bold small text-uppercase">Email Address</label>
                                     <input
@@ -143,13 +155,13 @@ export default function User() {
                                         required
                                     />
                                 </div>
-                               
+
                                 <div className="d-grid mt-4">
-                                    <Btn 
-                                        btnClass={'btn btn-custom-yellow py-2 fw-bold'} 
-                                        content={isSubmitting ? 'SAVING...' : 'SAVE CHANGES'} 
-                                        type="submit" 
-                                        disabled={isSubmitting || !isDirty} 
+                                    <Btn
+                                        btnClass={'btn btn-custom-yellow py-2 fw-bold'}
+                                        content={isSubmitting ? 'SAVING...' : 'SAVE CHANGES'}
+                                        type="submit"
+                                        disabled={isSubmitting || !isDirty}
                                     />
                                 </div>
                             </form>
@@ -157,7 +169,7 @@ export default function User() {
                     </div>
                 </div>
             </div>
-            
+
             <ToastContainer position="bottom-right" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick={true} rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
         </div>
     );
